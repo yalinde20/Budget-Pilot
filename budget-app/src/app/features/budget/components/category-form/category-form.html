@@ -1,0 +1,55 @@
+<div class="bg-white rounded-2xl shadow-sm p-4 flex flex-col gap-3">
+  <div class="flex items-center gap-2">
+    <button type="button" (click)="inputMode.set('percentage')" class="text-xs font-medium rounded-lg px-3 py-1.5 bg-gray-100 text-gray-500"
+            [class.text-white]="inputMode() === 'percentage'"
+            [class.bg-teal-600]="inputMode() === 'percentage'"
+    >%</button>
+
+    <button type="button" (click)="inputMode.set('amount')" class="text-xs font-medium rounded-lg px-3 py-1.5 bg-gray-100 text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed"
+            [disabled]="!canUseAmountMode()"
+            [class.text-white]="inputMode() === 'amount'"
+            [class.bg-teal-600]="inputMode() === 'amount'"
+    >€</button>
+
+    @if (!canUseAmountMode()) {
+      <span class="text-xs text-gray-400">Renseigne d'abord un revenu</span>
+    }
+  </div>
+
+  <div class="flex items-center gap-2">
+    <input type="text" [value]="name()" (input)="onNameInput($event)" placeholder="Nom de la catégorie"
+           class="flex-1 min-w-0 text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500">
+    @if (inputMode() === 'percentage') {
+      <input type="number" [value]="percentage()" (input)="onPercentageInput($event)" placeholder="%"
+             class="w-20 text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500">
+    } @else {
+      <input type="number" [value]="amount()" (input)="onAmountInput($event)" placeholder="€"
+             class="w-20 text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500">
+    }
+  </div>
+  <div class="flex gap-1">
+    @for (i of availableIcons; track i) {
+      <button type="button" (click)="icon.set(i)"
+              [class.ring-2]="icon() === i" [class.ring-teal-500]="icon() === i"
+              class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600">
+        <i class="ti {{ i }}"></i>
+      </button>
+    }
+  </div>
+
+  <div class="flex gap-1">
+    @for (c of availableColors; track c) {
+      <button type="button" (click)="color.set(c)"
+              class="w-6 h-6 rounded-full"
+              [style.background-color]="c"
+              [class.border-2]="color() === c"
+              [class.border-gray-900]="color() === c">
+      </button>
+    }
+  </div>
+
+  <button (click)="onSubmit()" [disabled]="!isValid()"
+          class="bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg px-4 py-2 transition-colors self-start disabled:opacity-40 disabled:cursor-not-allowed">
+    Ajouter
+  </button>
+</div>

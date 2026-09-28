@@ -1,0 +1,31 @@
+<div class="min-h-screen bg-gray-50 py-14 px-4">
+  <div class="max-w-xl mx-auto">
+
+    <h1 class="text-2xl font-semibold text-gray-900 mb-8">Mon budget</h1>
+
+    <div class="space-y-4">
+      <app-income-input
+        [income]="budgetService.income()"
+        (incomeChange)="budgetService.updateIncome($event)">
+      </app-income-input>
+
+      <app-allocation-summary
+        [totalPercentage]="budgetService.totalPercentage()"
+        [remainingPercentage]="budgetService.remainingPercentage()">
+      </app-allocation-summary>
+
+      <app-category-form
+        [income]="budgetService.income()"
+        (categoryAdded)="budgetService.addCategory($event)">
+      </app-category-form>
+
+      <app-category-list
+        [income]="budgetService.income()"
+        [categoryList]="budgetService.categoriesWithAmounts()"
+        (categoryRemoved)="budgetService.removeCategory($event)"
+        (categoryUpdated)="budgetService.updateCategory($event.id, $event.changes)">
+      </app-category-list>
+    </div>
+
+  </div>
+</div>

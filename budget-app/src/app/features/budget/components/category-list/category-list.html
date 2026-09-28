@@ -1,0 +1,13 @@
+<div class="space-y-3">
+  @if (categoryList().length === 0) {
+    <p class="text-sm text-gray-400 text-center py-6">Aucune catégorie pour le moment</p>
+  }
+  @for (element of categoryList(); track element.id) {
+    <app-category-item
+      [category]="element"
+      [income]="income()"
+      (categoryRemoved)="categoryRemoved.emit($event)"
+      (categoryUpdated)="categoryUpdated.emit($event)">
+    </app-category-item>
+  }
+</div>

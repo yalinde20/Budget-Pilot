@@ -1,0 +1,60 @@
+@if (!isEditing()) {
+  <div class="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3">
+    <div class="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center shrink-0"
+         [style.color]="category().color || '#94a3b8'">
+      <i class="ti {{ category().icon || 'ti-tag' }}"></i>
+    </div>
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm font-medium text-gray-900 truncate">{{ category().name }}</span>
+        <span class="text-sm font-medium text-gray-900">{{ category().amount | currency:'EUR' }}</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <div class="h-full rounded-full" [style.width.%]="category().percentage" [style.background-color]="category().color || '#94a3b8'"></div>
+        </div>
+        <span class="text-xs text-gray-400 w-16 text-right whitespace-nowrap">{{ category().percentage }} %</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-1 shrink-0">
+      <button (click)="onEditStart()" class="w-9 h-9 flex items-center justify-center rounded-lg text-gray-300 hover:text-teal-600 hover:bg-gray-50 transition-colors">
+        <i class="ti ti-pencil"></i>
+      </button>
+      <button (click)="onRemove()" class="w-9 h-9 flex items-center justify-center rounded-lg text-gray-300 hover:text-red-500 hover:bg-gray-50 transition-colors">
+        <i class="ti ti-trash"></i>
+      </button>
+    </div>
+  </div>
+} @else {
+  <div class="bg-white rounded-2xl shadow-sm p-4 flex flex-col gap-2">
+    <div class="flex items-center gap-2">
+      <button type="button" (click)="draftInputMode.set('percentage')"
+              class="text-xs font-medium rounded-lg px-3 py-1.5 bg-gray-100 text-gray-500"
+              [class.text-white]="draftInputMode() === 'percentage'"
+              [class.bg-teal-600]="draftInputMode() === 'percentage'">%</button>
+      <button type="button" (click)="draftInputMode.set('amount')"
+              [disabled]="!canUseAmountMode()"
+              class="text-xs font-medium rounded-lg px-3 py-1.5 bg-gray-100 text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed"
+              [class.text-white]="draftInputMode() === 'amount'"
+              [class.bg-teal-600]="draftInputMode() === 'amount'">€</button>
+    </div>
+    <div class="flex items-center gap-2 flex-wrap">
+      <input type="text" class="flex-1 min-w-0 text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500"
+             [value]="draftName()" (input)="onDraftNameInput($event)">
+      @if (draftInputMode() === 'percentage') {
+        <input type="number" class="w-20 text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500"
+               [value]="draftPercentage()" (input)="onDraftPercentageInput($event)">
+      } @else {
+        <input type="number" class="w-20 text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500"
+               [value]="draftAmount()" (input)="onDraftAmountInput($event)">
+      }
+      <button class="bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg px-3 py-2 transition-colors shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+              (click)="onEditSave()" [disabled]="!isDraftValid()">
+        Enregistrer
+      </button>
+      <button class="text-gray-400 hover:text-gray-600 text-sm px-2 shrink-0" (click)="onEditCancel()">
+        Annuler
+      </button>
+    </div>
+  </div>
+}
