@@ -33,3 +33,22 @@ export function calculatePercentageFromAmount(amount: number, income: number): n
   }
   return Math.round((amount / income) * 1000000) / 10000;
 }
+
+/**
+ * Convertit une saisie utilisateur en nombre. Accepte la virgule comme
+ * séparateur décimal (clavier iOS en français) et ignore les espaces.
+ * Une saisie vide vaut 0 ; une saisie invalide renvoie NaN.
+ */
+export function parseDecimal(raw: string): number {
+  const normalized = raw.replace(/[\s  ]/g, '').replace(',', '.');
+  if (normalized === '') {
+    return 0;
+  }
+  return /^-?(\d+\.?\d*|\.\d+)$/.test(normalized) ? Number(normalized) : NaN;
+}
+
+/** Affiche un nombre dans un champ de saisie, avec la virgule française.
+ * 0 donne un champ vide pour laisser apparaître le placeholder. */
+export function formatDecimal(value: number): string {
+  return value === 0 || !Number.isFinite(value) ? '' : String(value).replace('.', ',');
+}

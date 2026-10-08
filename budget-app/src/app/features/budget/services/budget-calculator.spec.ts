@@ -3,7 +3,9 @@ import {
   calculateAmount,
   calculateRemainingPercentage,
   calculateTotalPercentage,
+  formatDecimal,
   isOverAllocated,
+  parseDecimal,
 } from './budget-calculator';
 
 function makeCategory(percentage: number): Category {
@@ -62,5 +64,40 @@ describe('isOverAllocated', () => {
 
   it('renvoie true si le total dépasse 100', () => {
     expect(isOverAllocated([makeCategory(60), makeCategory(60)])).toBe(true);
+  });
+});
+
+describe('parseDecimal', () => {
+  it('accepte la virgule et le point comme séparateur décimal', () => {
+    expect(parseDecimal('12,5')).toBe(12.5);
+    expect(parseDecimal('12.5')).toBe(12.5);
+  });
+
+  it('ignore les espaces (dont les espaces insécables du format français)', () => {
+    expect(parseDecimal(' 2 500 ')).toBe(2500);
+    expect(parseDecimal('2\u202f500,50')).toBe(2500.5);
+  });
+
+  it('accepte une saisie en cours de frappe', () => {
+    expect(parseDecimal('12,')).toBe(12);
+    expect(parseDecimal(',5')).toBe(0.5);
+  });
+
+  it('renvoie 0 pour une saisie vide et NaN pour une saisie invalide', () => {
+    expect(parseDecimal('')).toBe(0);
+    expect(parseDecimal('abc')).toBeNaN();
+    expect(parseDecimal('1,2,3')).toBeNaN();
+  });
+});
+
+describe('formatDecimal', () => {
+  it('affiche la virgule française', () => {
+    expect(formatDecimal(12.5)).toBe('12,5');
+    expect(formatDecimal(2500)).toBe('2500');
+  });
+
+  it('renvoie une chaîne vide pour 0 ou une valeur invalide', () => {
+    expect(formatDecimal(0)).toBe('');
+    expect(formatDecimal(NaN)).toBe('');
   });
 });

@@ -3,17 +3,20 @@ import { CategoryWithAmount } from '../../services/budget.service';
 import { CategoryDraft } from '../../models/category.model';
 import {CurrencyPipe} from '@angular/common';
 import {isValidCategoryDraft} from '../../services/category-validator';
-import {calculatePercentageFromAmount} from '../../services/budget-calculator';
+import { calculatePercentageFromAmount, formatDecimal, parseDecimal } from '../../services/budget-calculator';
+import { Icon } from '../../../../shared/components/icon/icon';
 
 @Component({
   selector: 'app-category-item',
   imports: [
-    CurrencyPipe
+    CurrencyPipe,
+    Icon,
   ],
   templateUrl: './category-item.html',
   styleUrl: './category-item.css',
 })
 export class CategoryItem {
+  protected readonly formatDecimal = formatDecimal;
   category = input.required<CategoryWithAmount>();
   categoryRemoved = output<string>();
   categoryUpdated = output<{ id: string; changes: Partial<CategoryDraft> }>();
@@ -49,7 +52,8 @@ export class CategoryItem {
     this.isEditing.set(false);
   }
 
-  onEditSave(): void {
+  onEditSave(event?: Event): void {
+    event?.preventDefault();
     if (!this.isDraftValid()) return;
     this.categoryUpdated.emit({id :this.category().id, changes: { name: this.draftName(), percentage: this.effectiveDraftPercentage() }});
     this.isEditing.set(false);
@@ -60,11 +64,11 @@ export class CategoryItem {
   }
 
   onDraftPercentageInput(event: Event): void {
-    this.draftPercentage.set(Number((event.target as HTMLInputElement).value));
+    this.draftPercentage.set(parseDecimal((event.target as HTMLInputElement).value));
   }
 
   onDraftAmountInput(event: Event): void {
-    this.draftAmount.set(Number((event.target as HTMLInputElement).value));
+    this.draftAmount.set(parseDecimal((event.target as HTMLInputElement).value));
   }
 
 }

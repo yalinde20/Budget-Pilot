@@ -1,22 +1,40 @@
 import {Component, computed, input, output, signal} from '@angular/core';
 import { CategoryDraft } from '../../models/category.model';
 import { isValidCategoryDraft } from '../../services/category-validator';
-import {calculatePercentageFromAmount} from '../../services/budget-calculator';
+import { calculatePercentageFromAmount, formatDecimal, parseDecimal } from '../../services/budget-calculator';
+import { Icon } from '../../../../shared/components/icon/icon';
 
 @Component({
   selector: 'app-category-form',
-  imports: [],
+  imports: [Icon],
   templateUrl: './category-form.html',
   styleUrl: './category-form.css',
 })
 export class CategoryForm {
-  readonly availableIcons = ['ti-home', 'ti-salad', 'ti-pig-money', 'ti-ball-tennis', 'ti-car', 'ti-heart', 'ti-shopping-cart', 'ti-plane'];
-  readonly availableColors = ['#378ADD', '#639922', '#0F6E56', '#D4537E', '#B45AC9', '#E08E45'];
+  protected readonly formatDecimal = formatDecimal;
+  readonly availableIcons = [
+    { id: 'ti-home', label: 'Logement' },
+    { id: 'ti-salad', label: 'Alimentation' },
+    { id: 'ti-pig-money', label: 'Épargne' },
+    { id: 'ti-ball-tennis', label: 'Loisirs' },
+    { id: 'ti-car', label: 'Transport' },
+    { id: 'ti-heart', label: 'Santé' },
+    { id: 'ti-shopping-cart', label: 'Courses' },
+    { id: 'ti-plane', label: 'Voyages' },
+  ];
+  readonly availableColors = [
+    { value: '#378ADD', label: 'Bleu' },
+    { value: '#639922', label: 'Vert' },
+    { value: '#0F6E56', label: 'Vert foncé' },
+    { value: '#D4537E', label: 'Rose' },
+    { value: '#B45AC9', label: 'Violet' },
+    { value: '#E08E45', label: 'Orange' },
+  ];
 
   name = signal<string>('');
   percentage = signal<number>(0);
-  icon = signal<string>(this.availableIcons[0]);
-  color = signal(this.availableColors[0]);
+  icon = signal<string>(this.availableIcons[0].id);
+  color = signal(this.availableColors[0].value);
   income = input.required<number>();
   inputMode = signal<'percentage' | 'amount'>('percentage');
   amount = signal<number>(0);
@@ -35,21 +53,24 @@ export class CategoryForm {
   }
 
   onPercentageInput(event: Event): void {
-    this.percentage.set(Number((event.target as HTMLInputElement).value));
+    this.percentage.set(parseDecimal((event.target as HTMLInputElement).value));
   }
 
   onAmountInput(event: Event): void {
-    this.amount.set(Number((event.target as HTMLInputElement).value));
+    this.amount.set(parseDecimal((event.target as HTMLInputElement).value));
   }
 
-  onSubmit(): void {
+  onSubmit(event?: Event): void {
+    // Formulaire HTML natif : on empêche le rechargement de la page. La touche
+    // Entrée (ordinateur) ou « OK » (clavier iOS) soumet le formulaire.
+    event?.preventDefault();
     if (!this.isValid()) return;
     this.categoryAdded.emit({ name: this.name(), percentage: this.effectivePercentage(), icon: this.icon(), color: this.color()  });
     this.name.set('');
     this.percentage.set(0);
     this.amount.set(0);
-    this.icon.set(this.availableIcons[0]);
-    this.color.set(this.availableColors[0]);
+    this.icon.set(this.availableIcons[0].id);
+    this.color.set(this.availableColors[0].value);
     this.inputMode.set('percentage');
   }
 }
