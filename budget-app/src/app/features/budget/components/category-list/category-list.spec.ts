@@ -14,6 +14,8 @@ describe('CategoryList', () => {
 
     fixture = TestBed.createComponent(CategoryList);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('categoryList', []);
+    fixture.componentRef.setInput('income', 0);
     fixture.detectChanges();
   });
 

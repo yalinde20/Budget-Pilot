@@ -14,6 +14,8 @@ describe('AllocationSummary', () => {
 
     fixture = TestBed.createComponent(AllocationSummary);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('totalPercentage', 0);
+    fixture.componentRef.setInput('remainingPercentage', 100);
     fixture.detectChanges();
   });
 
