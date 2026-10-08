@@ -1,31 +1,37 @@
-<div class="min-h-screen bg-gray-50 py-14 px-4">
-  <div class="max-w-xl mx-auto">
+<main class="min-h-dvh bg-gray-50 pt-8 pb-24 sm:py-14 px-4">
+  <div class="max-w-xl lg:max-w-5xl mx-auto">
 
-    <h1 class="text-2xl font-semibold text-gray-900 mb-8">Mon budget</h1>
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6 sm:mb-8">Mon budget</h1>
 
-    <div class="space-y-4">
-      <app-income-input
-        [income]="budgetService.income()"
-        (incomeChange)="budgetService.updateIncome($event)">
-      </app-income-input>
+    <!-- Mobile : une colonne. Ordinateur (lg) : saisie à gauche, liste à droite. -->
+    <div class="grid gap-4 lg:grid-cols-2 lg:gap-8 lg:items-start">
+      <section class="space-y-4 lg:sticky lg:top-8" aria-label="Revenu et nouvelle catégorie">
+        <app-income-input
+          [income]="budgetService.income()"
+          (incomeChange)="budgetService.updateIncome($event)">
+        </app-income-input>
 
-      <app-allocation-summary
-        [totalPercentage]="budgetService.totalPercentage()"
-        [remainingPercentage]="budgetService.remainingPercentage()">
-      </app-allocation-summary>
+        <app-allocation-summary
+          [totalPercentage]="budgetService.totalPercentage()"
+          [remainingPercentage]="budgetService.remainingPercentage()">
+        </app-allocation-summary>
 
-      <app-category-form
-        [income]="budgetService.income()"
-        (categoryAdded)="budgetService.addCategory($event)">
-      </app-category-form>
+        <app-category-form
+          [income]="budgetService.income()"
+          (categoryAdded)="budgetService.addCategory($event)">
+        </app-category-form>
+      </section>
 
-      <app-category-list
-        [income]="budgetService.income()"
-        [categoryList]="budgetService.categoriesWithAmounts()"
-        (categoryRemoved)="budgetService.removeCategory($event)"
-        (categoryUpdated)="budgetService.updateCategory($event.id, $event.changes)">
-      </app-category-list>
+      <section aria-labelledby="categories-title">
+        <h2 id="categories-title" class="text-sm font-medium text-gray-500 mb-3 lg:mt-0">Catégories</h2>
+        <app-category-list
+          [income]="budgetService.income()"
+          [categoryList]="budgetService.categoriesWithAmounts()"
+          (categoryRemoved)="budgetService.removeCategory($event)"
+          (categoryUpdated)="budgetService.updateCategory($event.id, $event.changes)">
+        </app-category-list>
+      </section>
     </div>
 
   </div>
-</div>
+</main>
