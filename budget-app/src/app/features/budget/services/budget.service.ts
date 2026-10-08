@@ -46,6 +46,16 @@ export class BudgetService {
     effect(() => this.storage.set(STORAGE_KEY, this.budget()));
   }
 
+  /** Copie du budget complet, pour l'export (sauvegarde JSON). */
+  snapshot(): Budget {
+    return structuredClone(this.budget());
+  }
+
+  /** Remplace tout le budget, pour l'import d'une sauvegarde déjà validée. */
+  replaceBudget(budget: Budget): void {
+    this.budget.set(structuredClone(budget));
+  }
+
   updateIncome(income: number): void {
     this.budget.update((current) => ({ ...current, income, updatedAt: new Date().toISOString() }));
   }
