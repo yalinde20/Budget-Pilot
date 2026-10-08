@@ -23,12 +23,14 @@
 - Mise en page deux colonnes sur ordinateur, validation au clavier (Entrée / Échap)
 - Versions automatiques avec release-please, CI et déploiement Firebase à chaque release
 
+## ✅ Sauvegarde
+- Export / import des données en fichier JSON (partage iOS ou téléchargement, validation et confirmation avant import)
+
 ## 💡 Idées reportées à plus tard
 - Un vrai sélecteur d'icônes : bouton qui ouvre un panneau avec recherche, plus de choix qu'une simple liste fixe
 - Case à cocher pour rendre le montant d'une catégorie réellement fixe (indépendant des changements de revenu futurs), plutôt que juste au moment de la saisie
 
 ## 📋 Autres idées non commencées
-- **Export / import des données (JSON)** — prioritaire : sur iPhone, les données de l'app installée sont isolées de Safari et perdues si l'app est supprimée
 - Demander un stockage persistant (`navigator.storage.persist()`)
 - Annuler une suppression (undo)
 - Historique des revenus (suivi mois par mois)
