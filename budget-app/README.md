@@ -69,7 +69,13 @@ La configuration est à la racine du dépôt : `release-please-config.json` et `
    firebase login
    firebase init hosting:github   # crée le compte de service et le secret automatiquement
    ```
-   (`firebase init` propose aussi de générer des workflows : ils ne sont pas nécessaires, ceux du dépôt suffisent.)
+   Le secret créé s'appelle `FIREBASE_SERVICE_ACCOUNT_BUDGETPILOT_244FB` : les deux noms sont acceptés.
+   Réponds **non** quand `firebase init` propose de générer ses propres workflows (ceux du dépôt suffisent).
+
+   Sans terminal : console Firebase → ⚙️ *Paramètres du projet* → *Comptes de service* →
+   **Générer une nouvelle clé privée**, puis colle tout le contenu du fichier JSON comme valeur du secret
+   `FIREBASE_SERVICE_ACCOUNT` (lien direct : `https://github.com/yalinde20/Budget-Pilot/settings/secrets/actions/new`).
+   Ne committe jamais ce fichier.
 3. *(Optionnel)* Les PR créées par release-please avec le `GITHUB_TOKEN` ne déclenchent pas la CI.
    Pour la lancer dessus, utiliser un token personnel (secret passé en `token:` dans
    `.github/workflows/release-please.yml`).

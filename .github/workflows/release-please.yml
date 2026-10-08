@@ -52,7 +52,8 @@ jobs:
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          # Accepte le nom manuel ou celui créé par `firebase init hosting:github`.
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_BUDGETPILOT_244FB }}
           projectId: budgetpilot-244fb
           channelId: live
           entryPoint: budget-app
