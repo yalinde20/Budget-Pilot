@@ -31,6 +31,14 @@ npm run build && npx http-server dist/budget-app/browser -p 8080
 - **Ordinateur** (Chrome, Edge) : icône d'installation dans la barre d'adresse, ou menu → « Installer BudgetPilot ».
   Sur Safari macOS : Fichier → « Ajouter au Dock ».
 
+## Sauvegarder ses données
+
+Les données restent uniquement sur l'appareil. Le panneau **Sauvegarde** (en bas de page) permet de :
+- **Exporter** un fichier `budgetpilot-AAAA-MM-JJ.json` : sur iPhone via la feuille de partage
+  (« Enregistrer dans Fichiers », AirDrop, Mail…), sur ordinateur par téléchargement ;
+- **Importer** ce fichier sur n'importe quel appareil : il est vérifié, puis une confirmation est demandée
+  avant de remplacer les données actuelles.
+
 Quand une nouvelle version est déployée, un bandeau « Une nouvelle version est disponible » propose
 de mettre à jour. La version installée est affichée en bas de page.
 
@@ -40,12 +48,12 @@ Les versions sont gérées automatiquement par [release-please](https://github.c
 à partir des messages de commit, qui doivent suivre les
 [Conventional Commits](https://www.conventionalcommits.org/fr/) :
 
-| Préfixe                         | Effet sur la version (avant 1.0.0) | Exemple                                       |
-| ------------------------------- | ---------------------------------- | --------------------------------------------- |
-| `fix:`                          | patch (0.1.0 → 0.1.1)              | `fix: corrige l'arrondi des montants`         |
-| `feat:`                         | mineure (0.1.0 → 0.2.0)            | `feat: ajoute l'export JSON`                  |
-| `feat!:` ou `BREAKING CHANGE:`  | mineure tant qu'on est en 0.x      | `feat!: nouveau format de stockage`           |
-| `docs:`, `chore:`, `ci:`, `test:`, `refactor:` | aucune release      | `docs: met à jour le README`                  |
+| Préfixe                                        | Effet sur la version   | Exemple                                |
+| ---------------------------------------------- | ---------------------- | -------------------------------------- |
+| `fix:`                                         | patch (1.0.0 → 1.0.1)  | `fix: corrige l'arrondi des montants`  |
+| `feat:`                                        | mineure (1.0.0 → 1.1.0)| `feat: ajoute un graphique camembert`  |
+| `feat!:` ou `BREAKING CHANGE:`                 | majeure (1.0.0 → 2.0.0)| `feat!: nouveau format de stockage`    |
+| `docs:`, `chore:`, `ci:`, `test:`, `refactor:` | aucune release         | `docs: met à jour le README`           |
 
 Fonctionnement :
 
