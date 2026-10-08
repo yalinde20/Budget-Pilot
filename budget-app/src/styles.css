@@ -1,3 +1,27 @@
 @import "tailwindcss";
 
-/* You can add global styles to this file, and also import other style files */
+/* Styles globaux, pensés pour la PWA installée (iPhone et ordinateur). */
+
+html {
+  /* Évite que Safari iOS grossisse le texte en mode paysage. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  /* Même fond que l'app : pas de bande blanche lors du rebond iOS. */
+  background-color: var(--color-gray-50);
+  /* Marges des zones sûres (encoche, Dynamic Island, barre d'accueil),
+     actives grâce à `viewport-fit=cover` dans index.html. */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+button,
+a,
+input {
+  /* Supprime le délai de double-tap sur mobile. */
+  touch-action: manipulation;
+}
