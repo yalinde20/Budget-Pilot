@@ -5,11 +5,12 @@ import {CategoryForm} from '../category-form/category-form';
 import {CategoryList} from '../category-list/category-list';
 import {AllocationSummary} from '../allocation-summary/allocation-summary';
 import { BackupPanel } from '../backup-panel/backup-panel';
+import { AllocationChart } from '../allocation-chart/allocation-chart';
 
 
 @Component({
   selector: 'app-budget-page',
-  imports: [IncomeInput, CategoryForm, CategoryList, AllocationSummary, BackupPanel],
+  imports: [IncomeInput, CategoryForm, CategoryList, AllocationSummary, BackupPanel, AllocationChart],
   templateUrl: './budget-page.html',
   styleUrl: './budget-page.css',
 })

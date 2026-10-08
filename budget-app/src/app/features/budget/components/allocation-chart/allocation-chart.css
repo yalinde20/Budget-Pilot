@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+.segment {
+  transition: opacity 150ms ease;
+  cursor: pointer;
+}
+
+.segment.dimmed {
+  opacity: 0.3;
+}
