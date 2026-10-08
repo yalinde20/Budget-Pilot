@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.0.0...v1.1.0) (2026-10-08)
+
+
+### Fonctionnalités
+
+* export et import des données en fichier JSON ([312b4b8](https://github.com/yalinde20/Budget-Pilot/commit/312b4b83619e16347f4c0226c3cff5a74335c407))
+
+
+### Corrections
+
+* affiche les pourcentages avec la virgule française ([5f87d04](https://github.com/yalinde20/Budget-Pilot/commit/5f87d04acf6ef8bdb2c6f0b813418e917a107810))
+
 ## 1.0.0 (2026-10-08)
 
 
