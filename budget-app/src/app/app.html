@@ -1,1 +1,7 @@
-<router-outlet />
+<div class="min-h-dvh flex flex-col">
+  <div class="flex-1">
+    <router-outlet />
+  </div>
+  <footer class="text-center text-xs text-gray-400 pb-6">BudgetPilot v{{ version }}</footer>
+</div>
+<app-update-banner />
