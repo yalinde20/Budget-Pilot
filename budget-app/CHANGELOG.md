@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.1.0...v1.2.0) (2026-10-08)
+
+
+### Fonctionnalités
+
+* graphique de répartition en anneau (camembert) ([746a05c](https://github.com/yalinde20/Budget-Pilot/commit/746a05c51f364e02f5bf60c7bb11f71cc38a9fa6))
+
 ## [1.1.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.0.0...v1.1.0) (2026-10-08)
 
 
