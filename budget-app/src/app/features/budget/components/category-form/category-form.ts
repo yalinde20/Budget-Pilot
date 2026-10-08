@@ -1,8 +1,9 @@
-import {Component, computed, input, output, signal} from '@angular/core';
+import { Component, computed, input, linkedSignal, output, signal } from '@angular/core';
 import { CategoryDraft } from '../../models/category.model';
 import { isValidCategoryDraft } from '../../services/category-validator';
 import { calculatePercentageFromAmount, formatDecimal, parseDecimal } from '../../services/budget-calculator';
 import { Icon } from '../../../../shared/components/icon/icon';
+import { CATEGORY_COLORS, suggestCategoryColor } from '../../services/category-colors';
 
 @Component({
   selector: 'app-category-form',
@@ -22,20 +23,17 @@ export class CategoryForm {
     { id: 'ti-shopping-cart', label: 'Courses' },
     { id: 'ti-plane', label: 'Voyages' },
   ];
-  readonly availableColors = [
-    { value: '#378ADD', label: 'Bleu' },
-    { value: '#639922', label: 'Vert' },
-    { value: '#0F6E56', label: 'Vert foncé' },
-    { value: '#D4537E', label: 'Rose' },
-    { value: '#B45AC9', label: 'Violet' },
-    { value: '#E08E45', label: 'Orange' },
-  ];
+  readonly availableColors = CATEGORY_COLORS;
 
   name = signal<string>('');
   percentage = signal<number>(0);
   icon = signal<string>(this.availableIcons[0].id);
-  color = signal(this.availableColors[0].value);
   income = input.required<number>();
+  /** Couleurs des catégories existantes, pour en proposer une différente. */
+  usedColors = input<readonly (string | undefined)[]>([]);
+  /** Couleur proposée automatiquement, que l'utilisateur peut changer. Elle se
+   * recalcule après chaque ajout, quand la liste des couleurs utilisées change. */
+  color = linkedSignal<string>(() => suggestCategoryColor(this.usedColors()));
   inputMode = signal<'percentage' | 'amount'>('percentage');
   amount = signal<number>(0);
   canUseAmountMode = computed(() => this.income() > 0 );
@@ -70,7 +68,6 @@ export class CategoryForm {
     this.percentage.set(0);
     this.amount.set(0);
     this.icon.set(this.availableIcons[0].id);
-    this.color.set(this.availableColors[0].value);
     this.inputMode.set('percentage');
   }
 }

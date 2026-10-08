@@ -26,6 +26,9 @@
 ## ✅ Graphique de répartition
 - Anneau (camembert) des catégories avec légende chiffrée, détail au survol / toucher, regroupement « Autres » au-delà de 6 parts, part non répartie visible
 
+## ✅ Palette de couleurs
+- Palette validée pour les daltoniens (bleu, rouge, jaune, vert, violet, turquoise), couleur libre proposée automatiquement à chaque ajout, anciennes couleurs converties automatiquement
+
 ## ✅ Sauvegarde
 - Export / import des données en fichier JSON (partage iOS ou téléchargement, validation et confirmation avant import)
 
@@ -37,7 +40,6 @@
 - Demander un stockage persistant (`navigator.storage.persist()`)
 - Annuler une suppression (undo)
 - Historique des revenus (suivi mois par mois)
-- Palette de couleurs des catégories plus lisible pour les daltoniens (le rose et le violet actuels sont trop proches, le vert foncé trop terne)
 - Objectifs d'épargne (montant cible + barre de progression)
 - Mode sombre
 - Passage à IndexedDB (via `STORAGE_ADAPTER`, un seul endroit à changer)

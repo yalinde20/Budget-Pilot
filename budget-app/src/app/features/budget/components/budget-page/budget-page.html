@@ -18,6 +18,7 @@
 
         <app-category-form
           [income]="budgetService.income()"
+          [usedColors]="usedColors()"
           (categoryAdded)="budgetService.addCategory($event)">
         </app-category-form>
       </section>
