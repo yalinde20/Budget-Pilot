@@ -3,4 +3,4 @@
  * à chaque release (voir `release-please-config.json` à la racine du dépôt).
  * Ne pas modifier à la main.
  */
-export const APP_VERSION = '0.0.0'; // x-release-please-version
+export const APP_VERSION = '1.0.0'; // x-release-please-version
