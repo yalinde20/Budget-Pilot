@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.2.0...v1.3.0) (2026-10-08)
+
+
+### Fonctionnalités
+
+* palette de couleurs lisible par les daltoniens ([b9176b1](https://github.com/yalinde20/Budget-Pilot/commit/b9176b16c353310f2fa05ecbda36ec00ceb05b5e))
+
 ## [1.2.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.1.0...v1.2.0) (2026-10-08)
 
 
