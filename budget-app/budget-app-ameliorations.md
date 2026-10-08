@@ -23,6 +23,9 @@
 - Mise en page deux colonnes sur ordinateur, validation au clavier (Entrée / Échap)
 - Versions automatiques avec release-please, CI et déploiement Firebase à chaque release
 
+## ✅ Graphique de répartition
+- Anneau (camembert) des catégories avec légende chiffrée, détail au survol / toucher, regroupement « Autres » au-delà de 6 parts, part non répartie visible
+
 ## ✅ Sauvegarde
 - Export / import des données en fichier JSON (partage iOS ou téléchargement, validation et confirmation avant import)
 
@@ -34,7 +37,7 @@
 - Demander un stockage persistant (`navigator.storage.persist()`)
 - Annuler une suppression (undo)
 - Historique des revenus (suivi mois par mois)
-- Graphiques de répartition (camembert)
+- Palette de couleurs des catégories plus lisible pour les daltoniens (le rose et le violet actuels sont trop proches, le vert foncé trop terne)
 - Objectifs d'épargne (montant cible + barre de progression)
 - Mode sombre
 - Passage à IndexedDB (via `STORAGE_ADAPTER`, un seul endroit à changer)

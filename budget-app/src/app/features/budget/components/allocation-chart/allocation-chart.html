@@ -1,0 +1,72 @@
+<section aria-labelledby="chart-title" class="bg-white rounded-2xl shadow-sm p-4">
+  <h2 id="chart-title" class="text-sm font-medium text-gray-900 mb-3">Répartition</h2>
+
+  <div class="flex flex-col sm:flex-row items-center gap-5">
+    <!-- Anneau -->
+    <div class="relative w-44 h-44 shrink-0" (mouseleave)="setActive(null)">
+      <svg viewBox="0 0 200 200" class="w-full h-full" role="img" [attr.aria-label]="ariaLabel()">
+        <g transform="rotate(-90 100 100)">
+          <!-- Piste : la partie vide correspond au revenu non réparti. -->
+          <circle cx="100" cy="100" [attr.r]="radius" fill="none" stroke="#f3f4f6" stroke-width="24" />
+          @for (segment of chart().segments; track segment.id) {
+            <circle cx="100" cy="100" [attr.r]="radius" fill="none" stroke-width="24"
+                    class="segment" pointer-events="stroke"
+                    [class.dimmed]="active() && active()?.id !== segment.id"
+                    [attr.stroke]="segment.color"
+                    [attr.stroke-dasharray]="dash(segment).array"
+                    [attr.stroke-dashoffset]="dash(segment).offset"
+                    (mouseenter)="setActive(segment.id)"
+                    (click)="setActive(segment.id)" />
+          }
+        </g>
+      </svg>
+
+      <!-- Centre : détail de la part active, sinon total réparti -->
+      <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-8 pointer-events-none" aria-hidden="true">
+        @if (active(); as a) {
+          <span class="text-xs text-gray-500 truncate max-w-full">{{ a.label }}</span>
+          <span class="text-lg font-semibold text-gray-900 leading-tight">{{ a.percentage | number:'1.0-2' }} %</span>
+          <span class="text-xs text-gray-500">{{ a.amount | currency:'EUR' }}</span>
+        } @else {
+          <span class="text-xs text-gray-500">Réparti</span>
+          <span class="text-lg font-semibold text-gray-900 leading-tight">{{ chart().totalPercentage | number:'1.0-2' }} %</span>
+          <span class="text-xs text-gray-500">{{ chart().totalAmount | currency:'EUR' }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Légende : identifie chaque part par son nom et ses valeurs, pas seulement sa couleur -->
+    <ul class="w-full min-w-0 flex flex-col gap-1">
+      @for (segment of chart().segments; track segment.id) {
+        <li>
+          <button type="button"
+                  class="w-full flex items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm hover:bg-gray-50 focus:bg-gray-50 outline-none"
+                  [class.bg-gray-50]="activeId() === segment.id"
+                  [attr.aria-pressed]="activeId() === segment.id"
+                  (mouseenter)="setActive(segment.id)" (mouseleave)="setActive(null)"
+                  (focus)="setActive(segment.id)" (blur)="setActive(null)"
+                  (click)="setActive(segment.id)">
+            <span class="w-2.5 h-2.5 rounded-sm shrink-0" [style.background-color]="segment.color"></span>
+            <span class="flex-1 min-w-0 truncate text-gray-900">{{ segment.label }}</span>
+            <span class="w-14 shrink-0 text-right text-gray-500 whitespace-nowrap">{{ segment.percentage | number:'1.0-2' }} %</span>
+            <span class="min-w-20 shrink-0 text-right text-gray-900 whitespace-nowrap">{{ segment.amount | currency:'EUR' }}</span>
+          </button>
+        </li>
+      }
+      @if (chart().unallocated; as u) {
+        <li class="flex items-center gap-2 px-2 py-1.5 text-sm">
+          <span class="w-2.5 h-2.5 rounded-sm shrink-0 border border-gray-300 bg-gray-100"></span>
+          <span class="flex-1 min-w-0 truncate text-gray-500">Non réparti</span>
+          <span class="w-14 shrink-0 text-right text-gray-500 whitespace-nowrap">{{ u.percentage | number:'1.0-2' }} %</span>
+          <span class="min-w-20 shrink-0 text-right text-gray-500 whitespace-nowrap">{{ u.amount | currency:'EUR' }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+
+  @if (chart().overAllocated) {
+    <p class="text-xs text-red-700 mt-3">
+      Le total dépasse 100 % : le graphique est calculé sur {{ chart().totalPercentage | number:'1.0-2' }}&nbsp;%.
+    </p>
+  }
+</section>

@@ -23,6 +23,12 @@
       </section>
 
       <section aria-labelledby="categories-title">
+        @if (budgetService.categoriesWithAmounts().length >= 2) {
+          <app-allocation-chart
+            class="mb-6"
+            [categories]="budgetService.categoriesWithAmounts()"
+            [income]="budgetService.income()" />
+        }
         <h2 id="categories-title" class="text-sm font-medium text-gray-500 mb-3 lg:mt-0">Catégories</h2>
         <app-category-list
           [income]="budgetService.income()"
