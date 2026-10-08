@@ -13,7 +13,7 @@
         <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
           <div class="h-full rounded-full" [style.width.%]="category().percentage" [style.background-color]="category().color || '#94a3b8'"></div>
         </div>
-        <span class="text-xs text-gray-400 w-16 text-right whitespace-nowrap">{{ category().percentage }} %</span>
+        <span class="text-xs text-gray-400 w-16 text-right whitespace-nowrap">{{ category().percentage | number:'1.0-2' }} %</span>
       </div>
     </div>
     <div class="flex items-center gap-1 shrink-0">

@@ -1,8 +1,9 @@
 import { Component, input } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-allocation-summary',
-  imports: [],
+  imports: [DecimalPipe],
   templateUrl: './allocation-summary.html',
   styleUrl: './allocation-summary.css',
 })

@@ -6,11 +6,11 @@
   [class.text-red-700]="remainingPercentage() < 0"
   [class.bg-teal-50]="remainingPercentage() === 0"
   [class.text-teal-700]="remainingPercentage() === 0">
-  <span>Total réparti : {{ totalPercentage() }} %</span>
+  <span>Total réparti : {{ totalPercentage() | number:'1.0-2' }} %</span>
   @if (remainingPercentage() > 0) {
-    <span>Il reste {{ remainingPercentage() }} %</span>
+    <span>Il reste {{ remainingPercentage() | number:'1.0-2' }} %</span>
   } @else if (remainingPercentage() < 0) {
-    <span>Vous avez dépassé le total de : {{ -remainingPercentage() }} %</span>
+    <span>Vous avez dépassé le total de : {{ -remainingPercentage() | number:'1.0-2' }} %</span>
   } @else {
     <span>100 % réparti</span>
   }
