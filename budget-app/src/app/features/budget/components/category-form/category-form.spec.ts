@@ -14,6 +14,7 @@ describe('CategoryForm', () => {
 
     fixture = TestBed.createComponent(CategoryForm);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('income', 0);
     fixture.detectChanges();
   });
 

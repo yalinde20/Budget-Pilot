@@ -2,7 +2,8 @@ import {
   ApplicationConfig,
   LOCALE_ID,
   provideBrowserGlobalErrorListeners,
-  provideZoneChangeDetection, isDevMode
+  provideZoneChangeDetection,
+  isDevMode,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
@@ -24,12 +25,10 @@ export const appConfig: ApplicationConfig = {
     // Pour basculer vers IndexedDB plus tard : remplacer LocalStorageAdapterService
     // par la nouvelle classe ici, et nulle part ailleurs.
     { provide: STORAGE_ADAPTER, useClass: LocalStorageAdapterService },
-    { provide: LOCALE_ID, useValue: 'fr-FR' }, provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          }), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          })
+    { provide: LOCALE_ID, useValue: 'fr-FR' },
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ]
 };

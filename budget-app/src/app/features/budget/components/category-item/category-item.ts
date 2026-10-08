@@ -29,7 +29,7 @@ export class CategoryItem {
   });
 
   isDraftValid = computed(() => {
-    return this.draftInputMode() === 'amount' && !this.canUseAmountMode() ? false : isValidCategoryDraft({ name: this.draftName(), percentage: this.draftPercentage() })
+    return this.draftInputMode() === 'amount' && !this.canUseAmountMode() ? false : isValidCategoryDraft({ name: this.draftName(), percentage: this.effectiveDraftPercentage() })
   } );
 
 
@@ -41,7 +41,7 @@ export class CategoryItem {
     this.draftName.set(this.category().name);
     this.draftPercentage.set(this.category().percentage);
     this.draftInputMode.set('percentage');
-    this.draftAmount.set(0);
+    this.draftAmount.set(this.category().amount);
     this.isEditing.set(true);
   }
 
