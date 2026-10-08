@@ -1,59 +1,92 @@
-# BudgetApp
+# BudgetPilot
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.33.
+Application (PWA) pour répartir son revenu mensuel en catégories, en pourcentage ou en euros.
+Elle s'installe sur iPhone comme sur ordinateur et fonctionne hors-ligne. Les données restent
+sur l'appareil (`localStorage`).
 
-## Development server
+Stack : Angular 20 (composants standalone, signals), Tailwind CSS 4, `@angular/service-worker`,
+hébergement Firebase Hosting (projet `budgetpilot-244fb`).
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Développement
 
 ```bash
-ng generate component component-name
+npm ci
+npm start          # http://localhost:4200 (le service worker est désactivé en dev)
+npm test           # tests unitaires (Karma, navigateur Chrome)
+npm run test:ci    # tests unitaires sans interface, comme en CI
+npm run build      # build de production dans dist/budget-app/browser
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Pour tester la PWA (service worker, hors-ligne, installation), il faut le build de production :
 
 ```bash
-ng generate --help
+npm run build && npx http-server dist/budget-app/browser -p 8080
 ```
 
-## Building
+## Installer l'application
 
-To build the project run:
+- **iPhone / iPad** : ouvrir l'URL dans **Safari** → bouton **Partager** → **« Sur l'écran d'accueil »**.
+  L'app s'ouvre ensuite en plein écran, sans barre Safari.
+  ⚠️ Les données de l'app installée sont séparées de celles de Safari.
+- **Ordinateur** (Chrome, Edge) : icône d'installation dans la barre d'adresse, ou menu → « Installer BudgetPilot ».
+  Sur Safari macOS : Fichier → « Ajouter au Dock ».
 
-```bash
-ng build
+Quand une nouvelle version est déployée, un bandeau « Une nouvelle version est disponible » propose
+de mettre à jour. La version installée est affichée en bas de page.
+
+## Versions et releases (release-please)
+
+Les versions sont gérées automatiquement par [release-please](https://github.com/googleapis/release-please)
+à partir des messages de commit, qui doivent suivre les
+[Conventional Commits](https://www.conventionalcommits.org/fr/) :
+
+| Préfixe                         | Effet sur la version (avant 1.0.0) | Exemple                                       |
+| ------------------------------- | ---------------------------------- | --------------------------------------------- |
+| `fix:`                          | patch (0.1.0 → 0.1.1)              | `fix: corrige l'arrondi des montants`         |
+| `feat:`                         | mineure (0.1.0 → 0.2.0)            | `feat: ajoute l'export JSON`                  |
+| `feat!:` ou `BREAKING CHANGE:`  | mineure tant qu'on est en 0.x      | `feat!: nouveau format de stockage`           |
+| `docs:`, `chore:`, `ci:`, `test:`, `refactor:` | aucune release      | `docs: met à jour le README`                  |
+
+Fonctionnement :
+
+1. À chaque push sur `master`, release-please ouvre (ou met à jour) une PR **« chore(master): release x.y.z »**
+   avec le `CHANGELOG.md` et la nouvelle version (`package.json`, `src/app/core/version.ts`).
+2. Quand cette PR est mergée, release-please crée le tag `vx.y.z` et la release GitHub.
+3. La release déclenche automatiquement le déploiement sur Firebase Hosting.
+
+Si tu merges des PR, utilise le « Squash and merge » avec un titre de PR au format conventionnel.
+
+La configuration est à la racine du dépôt : `release-please-config.json` et `.release-please-manifest.json`.
+
+### Configuration GitHub à faire une fois
+
+1. **Autoriser release-please à ouvrir des PR** : *Settings → Actions → General → Workflow permissions* →
+   cocher **« Allow GitHub Actions to create and approve pull requests »**.
+2. **Secret Firebase** pour le déploiement : créer le secret `FIREBASE_SERVICE_ACCOUNT`
+   (*Settings → Secrets and variables → Actions*). Le plus simple :
+   ```bash
+   npm i -g firebase-tools
+   firebase login
+   firebase init hosting:github   # crée le compte de service et le secret automatiquement
+   ```
+   (`firebase init` propose aussi de générer des workflows : ils ne sont pas nécessaires, ceux du dépôt suffisent.)
+3. *(Optionnel)* Les PR créées par release-please avec le `GITHUB_TOKEN` ne déclenchent pas la CI.
+   Pour la lancer dessus, utiliser un token personnel (secret passé en `token:` dans
+   `.github/workflows/release-please.yml`).
+
+## Intégration continue
+
+- `.github/workflows/ci.yml` : build + tests unitaires sur chaque PR et chaque push sur `master`.
+- `.github/workflows/release-please.yml` : PR de release, tag, puis déploiement Firebase (canal `live`).
+
+## Organisation du code
+
+```
+src/app/
+  core/                 # transverse : stockage, version, mises à jour PWA
+  shared/components/    # composants réutilisables (icônes SVG)
+  features/budget/      # fonctionnalité budget (composants, services, modèles)
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Les calculs (`budget-calculator.ts`) et validations (`category-validator.ts`) sont des fonctions
+pures, sans dépendance Angular, testées unitairement.
