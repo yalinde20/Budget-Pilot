@@ -1,7 +1,7 @@
 import {Component, computed, input, output, signal} from '@angular/core';
 import { CategoryWithAmount } from '../../services/budget.service';
 import { CategoryDraft } from '../../models/category.model';
-import {CurrencyPipe} from '@angular/common';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import {isValidCategoryDraft} from '../../services/category-validator';
 import { calculatePercentageFromAmount, formatDecimal, parseDecimal } from '../../services/budget-calculator';
 import { Icon } from '../../../../shared/components/icon/icon';
@@ -10,6 +10,7 @@ import { Icon } from '../../../../shared/components/icon/icon';
   selector: 'app-category-item',
   imports: [
     CurrencyPipe,
+    DecimalPipe,
     Icon,
   ],
   templateUrl: './category-item.html',
