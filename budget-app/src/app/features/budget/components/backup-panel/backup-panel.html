@@ -1,0 +1,30 @@
+<section aria-labelledby="backup-title" class="bg-white rounded-2xl shadow-sm p-4 flex flex-col gap-3">
+  <div>
+    <h2 id="backup-title" class="text-sm font-medium text-gray-900">Sauvegarde</h2>
+    <p class="text-xs text-gray-500 mt-1">
+      Tes données restent uniquement sur cet appareil. Exporte-les régulièrement dans un fichier
+      pour ne rien perdre, ou pour les retrouver sur un autre appareil.
+    </p>
+  </div>
+
+  <div class="flex flex-wrap gap-2">
+    <button type="button" (click)="onExport()"
+            class="flex items-center gap-1.5 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg px-4 py-2 transition-colors">
+      <app-icon name="download" [size]="16" />
+      Exporter
+    </button>
+    <button type="button" (click)="fileInput.click()"
+            class="flex items-center gap-1.5 border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-lg px-4 py-2 transition-colors">
+      <app-icon name="upload" [size]="16" />
+      Importer
+    </button>
+    <input #fileInput type="file" accept="application/json,.json" class="hidden"
+           aria-label="Fichier de sauvegarde à importer" (change)="onFileSelected($event)">
+  </div>
+
+  @if (status(); as s) {
+    <p role="status" class="text-xs"
+       [class.text-teal-700]="s.kind === 'success'"
+       [class.text-red-600]="s.kind === 'error'">{{ s.text }}</p>
+  }
+</section>
