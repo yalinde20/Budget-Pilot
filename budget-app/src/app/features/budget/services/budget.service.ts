@@ -8,6 +8,7 @@ import {
   calculateTotalPercentage,
   isOverAllocated,
 } from './budget-calculator';
+import { migrateLegacyColors } from './category-colors';
 
 const STORAGE_KEY = 'budget';
 
@@ -22,7 +23,9 @@ export class BudgetService {
 
   // État privé : seul ce service peut le modifier. Le reste de l'app
   // ne voit que les signaux exposés en lecture ci-dessous (computed).
-  private readonly budget = signal<Budget>(this.storage.get<Budget>(STORAGE_KEY) ?? createEmptyBudget());
+  private readonly budget = signal<Budget>(
+    migrateLegacyColors(this.storage.get<Budget>(STORAGE_KEY) ?? createEmptyBudget()),
+  );
 
   readonly income = computed(() => this.budget().income);
   readonly categories = computed(() => this.budget().categories);
@@ -53,7 +56,7 @@ export class BudgetService {
 
   /** Remplace tout le budget, pour l'import d'une sauvegarde déjà validée. */
   replaceBudget(budget: Budget): void {
-    this.budget.set(structuredClone(budget));
+    this.budget.set(migrateLegacyColors(structuredClone(budget)));
   }
 
   updateIncome(income: number): void {

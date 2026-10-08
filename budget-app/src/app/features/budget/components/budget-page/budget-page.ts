@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { IncomeInput } from '../income-input/income-input';
 import {BudgetService} from '../../services/budget.service';
 import {CategoryForm} from '../category-form/category-form';
@@ -16,5 +16,6 @@ import { AllocationChart } from '../allocation-chart/allocation-chart';
 })
 export class BudgetPage {
   readonly budgetService = inject(BudgetService);
+  readonly usedColors = computed(() => this.budgetService.categories().map((c) => c.color));
 
 }
