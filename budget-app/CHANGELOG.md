@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.5.0...v1.6.0) (2026-10-09)
+
+
+### Fonctionnalités
+
+* réorganisation des catégories par glisser-déposer ([255a816](https://github.com/yalinde20/Budget-Pilot/commit/255a81609699623977378746c0ddf466bec13752))
+
 ## [1.5.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.4.0...v1.5.0) (2026-10-09)
 
 
