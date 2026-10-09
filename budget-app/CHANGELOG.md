@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.3.0...v1.4.0) (2026-10-09)
+
+
+### Fonctionnalités
+
+* annulation de la suppression d'une catégorie ([31dcb6b](https://github.com/yalinde20/Budget-Pilot/commit/31dcb6b5134cc7fc55b1720b4b9f77371552cdc8))
+
 ## [1.3.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.2.0...v1.3.0) (2026-10-08)
 
 
