@@ -36,6 +36,8 @@ export class CategoryForm {
   color = linkedSignal<string>(() => suggestCategoryColor(this.usedColors()));
   inputMode = signal<'percentage' | 'amount'>('percentage');
   amount = signal<number>(0);
+  /** En mode €, garde ce montant même si le revenu change ensuite. */
+  fixed = signal<boolean>(false);
   canUseAmountMode = computed(() => this.income() > 0 );
   effectivePercentage = computed(() =>{
     return this.inputMode() === 'amount' ? calculatePercentageFromAmount(this.amount(), this.income()) : this.percentage();
@@ -63,11 +65,19 @@ export class CategoryForm {
     // Entrée (ordinateur) ou « OK » (clavier iOS) soumet le formulaire.
     event?.preventDefault();
     if (!this.isValid()) return;
-    this.categoryAdded.emit({ name: this.name(), percentage: this.effectivePercentage(), icon: this.icon(), color: this.color()  });
+    const fixedAmount = this.inputMode() === 'amount' && this.fixed() ? this.amount() : undefined;
+    this.categoryAdded.emit({
+      name: this.name(),
+      percentage: this.effectivePercentage(),
+      icon: this.icon(),
+      color: this.color(),
+      ...(fixedAmount !== undefined ? { fixedAmount } : {}),
+    });
     this.name.set('');
     this.percentage.set(0);
     this.amount.set(0);
     this.icon.set(this.availableIcons[0].id);
     this.inputMode.set('percentage');
+    this.fixed.set(false);
   }
 }

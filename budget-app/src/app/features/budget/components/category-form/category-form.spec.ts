@@ -44,3 +44,31 @@ describe('CategoryForm (couleur proposée)', () => {
     expect(form.color()).toBe('#e34948');
   });
 });
+
+describe('CategoryForm (montant fixe)', () => {
+  it('envoie le montant fixe seulement si la case est cochée en mode €', async () => {
+    await TestBed.configureTestingModule({ imports: [CategoryForm] }).compileComponents();
+    const fixture = TestBed.createComponent(CategoryForm);
+    const form = fixture.componentInstance;
+    fixture.componentRef.setInput('income', 2000);
+    fixture.detectChanges();
+    const emitted: unknown[] = [];
+    form.categoryAdded.subscribe((draft) => emitted.push(draft));
+
+    form.name.set('Loyer');
+    form.inputMode.set('amount');
+    form.amount.set(700);
+    form.fixed.set(true);
+    form.onSubmit();
+
+    form.name.set('Loisirs');
+    form.inputMode.set('amount');
+    form.amount.set(200);
+    form.onSubmit();
+
+    expect(emitted[0]).toEqual(jasmine.objectContaining({ name: 'Loyer', percentage: 35, fixedAmount: 700 }));
+    expect(emitted[1]).toEqual(jasmine.objectContaining({ name: 'Loisirs', percentage: 10 }));
+    expect('fixedAmount' in (emitted[1] as object)).toBeFalse();
+    expect(form.fixed()).toBeFalse();
+  });
+});

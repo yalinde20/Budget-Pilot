@@ -7,7 +7,15 @@
     <div class="flex-1 min-w-0">
       <div class="flex items-center justify-between gap-2 mb-2">
         <span class="text-sm font-medium text-gray-900 truncate">{{ category().name }}</span>
-        <span class="text-sm font-medium text-gray-900 whitespace-nowrap">{{ category().amount | currency:'EUR' }}</span>
+        <span class="flex items-center gap-1 text-sm font-medium text-gray-900 whitespace-nowrap">
+          @if (category().fixedAmount !== undefined) {
+            <span class="text-gray-400" title="Montant fixe : ne change pas avec le revenu">
+              <app-icon name="lock" [size]="14" />
+              <span class="sr-only">Montant fixe,</span>
+            </span>
+          }
+          {{ category().amount | currency:'EUR' }}
+        </span>
       </div>
       <div class="flex items-center gap-2">
         <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
@@ -45,7 +53,7 @@
     </div>
     <div class="flex items-center gap-2 flex-wrap">
       <input type="text" aria-label="Nom de la catégorie" autocomplete="off" enterkeyhint="done"
-             class="flex-1 min-w-0 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500"
+             class="basis-full sm:basis-0 sm:flex-1 min-w-0 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500"
              [value]="draftName()" (input)="onDraftNameInput($event)">
       @if (draftInputMode() === 'percentage') {
         <input type="text" inputmode="decimal" aria-label="Pourcentage du revenu" autocomplete="off" enterkeyhint="done"
@@ -65,5 +73,12 @@
         Annuler
       </button>
     </div>
+    @if (draftInputMode() === 'amount') {
+      <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+        <input type="checkbox" class="w-4 h-4 accent-teal-600"
+               [checked]="draftFixed()" (change)="draftFixed.set($any($event.target).checked)">
+        Montant fixe <span class="text-xs text-gray-400">(ne change pas avec le revenu)</span>
+      </label>
+    }
   </form>
 }

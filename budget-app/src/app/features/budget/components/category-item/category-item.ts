@@ -27,6 +27,7 @@ export class CategoryItem {
   income = input.required<number>();
   draftInputMode = signal<'percentage' | 'amount'>('percentage');
   draftAmount = signal<number>(0);
+  draftFixed = signal<boolean>(false);
   canUseAmountMode = computed(() => this.income() > 0 );
   effectiveDraftPercentage = computed(() =>{
     return this.draftInputMode() === 'amount' ? calculatePercentageFromAmount(this.draftAmount(), this.income()) : this.draftPercentage();
@@ -42,10 +43,14 @@ export class CategoryItem {
   }
 
   onEditStart(): void {
-    this.draftName.set(this.category().name);
-    this.draftPercentage.set(this.category().percentage);
-    this.draftInputMode.set('percentage');
-    this.draftAmount.set(this.category().amount);
+    const category = this.category();
+    const isFixed = category.fixedAmount !== undefined;
+    this.draftName.set(category.name);
+    this.draftPercentage.set(category.percentage);
+    // Une catégorie à montant fixe s'édite directement en euros.
+    this.draftInputMode.set(isFixed && this.canUseAmountMode() ? 'amount' : 'percentage');
+    this.draftAmount.set(category.amount);
+    this.draftFixed.set(isFixed);
     this.isEditing.set(true);
   }
 
@@ -56,8 +61,20 @@ export class CategoryItem {
   onEditSave(event?: Event): void {
     event?.preventDefault();
     if (!this.isDraftValid()) return;
-    this.categoryUpdated.emit({id :this.category().id, changes: { name: this.draftName(), percentage: this.effectiveDraftPercentage() }});
+    this.categoryUpdated.emit({
+      id: this.category().id,
+      changes: { name: this.draftName(), percentage: this.effectiveDraftPercentage(), fixedAmount: this.draftFixedAmount() },
+    });
     this.isEditing.set(false);
+  }
+
+  /** Montant fixe à enregistrer ; undefined le retire (retour au pourcentage). */
+  private draftFixedAmount(): number | undefined {
+    if (!this.draftFixed()) return undefined;
+    if (this.draftInputMode() === 'amount') return this.draftAmount();
+    // Sans revenu, le mode € est indisponible : on garde le montant fixe
+    // existant plutôt que de le perdre en modifiant seulement le nom.
+    return this.canUseAmountMode() ? undefined : this.category().fixedAmount;
   }
 
   onDraftNameInput(event: Event): void {

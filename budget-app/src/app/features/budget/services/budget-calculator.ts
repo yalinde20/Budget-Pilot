@@ -52,3 +52,17 @@ export function parseDecimal(raw: string): number {
 export function formatDecimal(value: number): string {
   return value === 0 || !Number.isFinite(value) ? '' : String(value).replace('.', ',');
 }
+
+/** Pourcentage effectif d'une catégorie : déduit de son montant fixe s'il y
+ * en a un, sinon le pourcentage saisi. */
+export function effectivePercentage(category: Category, income: number): number {
+  return category.fixedAmount !== undefined
+    ? calculatePercentageFromAmount(category.fixedAmount, income)
+    : category.percentage;
+}
+
+/** Montant effectif d'une catégorie : son montant fixe s'il y en a un,
+ * sinon la part du revenu correspondant à son pourcentage. */
+export function effectiveAmount(category: Category, income: number): number {
+  return category.fixedAmount ?? calculateAmount(income, category.percentage);
+}

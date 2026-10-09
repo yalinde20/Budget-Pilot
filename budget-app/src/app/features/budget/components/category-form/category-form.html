@@ -37,6 +37,17 @@
     }
   </div>
 
+  @if (inputMode() === 'amount') {
+    <label class="flex items-start gap-2 text-sm text-gray-700 cursor-pointer select-none">
+      <input type="checkbox" class="mt-0.5 w-4 h-4 accent-teal-600 shrink-0"
+             [checked]="fixed()" (change)="fixed.set($any($event.target).checked)">
+      <span>
+        Montant fixe
+        <span class="block text-xs text-gray-400">Garde ce montant même si ton revenu change.</span>
+      </span>
+    </label>
+  }
+
   <div class="grid grid-cols-8 gap-1 sm:flex" role="group" aria-label="Icône">
     @for (i of availableIcons; track i.id) {
       <button type="button" (click)="icon.set(i.id)"

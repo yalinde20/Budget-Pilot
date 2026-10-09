@@ -95,6 +95,7 @@ function isCategory(value: unknown): value is Category {
     isFiniteNumber(value['percentage']) &&
     isOptionalString(value['icon']) &&
     isOptionalString(value['color']) &&
+    (value['fixedAmount'] === undefined || (isFiniteNumber(value['fixedAmount']) && value['fixedAmount'] >= 0)) &&
     typeof value['createdAt'] === 'string' &&
     typeof value['updatedAt'] === 'string'
   );
