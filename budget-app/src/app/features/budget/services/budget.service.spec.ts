@@ -100,3 +100,48 @@ describe('BudgetService (montant fixe)', () => {
     expect(service.categoriesWithAmounts()[0].amount).toBe(1000);
   });
 });
+
+describe('BudgetService (réorganisation)', () => {
+  let service: BudgetService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }] });
+    service = TestBed.inject(BudgetService);
+    for (const name of ['Loyer', 'Courses', 'Loisirs']) {
+      service.addCategory({ name, percentage: 10 });
+    }
+  });
+
+  const names = () => service.categories().map((c) => c.name);
+
+  it('déplace une catégorie vers le bas ou vers le haut', () => {
+    service.moveCategory(0, 2);
+    expect(names()).toEqual(['Courses', 'Loisirs', 'Loyer']);
+    service.moveCategory(2, 0);
+    expect(names()).toEqual(['Loyer', 'Courses', 'Loisirs']);
+  });
+
+  it('enchaîne correctement plusieurs crans au clavier, sans sortir de la liste', () => {
+    const id = service.categories()[2].id; // Loisirs
+    service.nudgeCategory(id, -1);
+    service.nudgeCategory(id, -1);
+    service.nudgeCategory(id, -1);
+    expect(names()).toEqual(['Loisirs', 'Loyer', 'Courses']);
+
+    service.nudgeCategory(id, 5);
+    expect(names()).toEqual(['Loyer', 'Courses', 'Loisirs']);
+    service.nudgeCategory('inconnue', 1);
+    expect(names()).toEqual(['Loyer', 'Courses', 'Loisirs']);
+  });
+
+  it('ignore un déplacement sur place ou hors limites', () => {
+    const before = service.categories();
+    service.moveCategory(1, 1);
+    expect(service.categories()).toBe(before);
+
+    service.moveCategory(0, 99);
+    expect(names()).toEqual(['Courses', 'Loisirs', 'Loyer']);
+    service.moveCategory(-5, 0);
+    expect(names()).toEqual(['Courses', 'Loisirs', 'Loyer']);
+  });
+});

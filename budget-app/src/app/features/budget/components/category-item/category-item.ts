@@ -5,6 +5,7 @@ import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import {isValidCategoryDraft} from '../../services/category-validator';
 import { calculatePercentageFromAmount, formatDecimal, parseDecimal } from '../../services/budget-calculator';
 import { Icon } from '../../../../shared/components/icon/icon';
+import { CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-category-item',
@@ -12,6 +13,7 @@ import { Icon } from '../../../../shared/components/icon/icon';
     CurrencyPipe,
     DecimalPipe,
     Icon,
+    CdkDragHandle,
   ],
   templateUrl: './category-item.html',
   styleUrl: './category-item.css',
@@ -20,6 +22,10 @@ export class CategoryItem {
   protected readonly formatDecimal = formatDecimal;
   category = input.required<CategoryWithAmount>();
   categoryRemoved = output<string>();
+  /** Affiche la poignée de déplacement (au moins deux catégories). */
+  reorderable = input<boolean>(false);
+  /** Déplacement au clavier : -1 vers le haut, +1 vers le bas. */
+  moveBy = output<number>();
   categoryUpdated = output<{ id: string; changes: Partial<CategoryDraft> }>();
   isEditing = signal<boolean>(false);
   draftName = signal<string>('');
@@ -37,6 +43,13 @@ export class CategoryItem {
     return this.draftInputMode() === 'amount' && !this.canUseAmountMode() ? false : isValidCategoryDraft({ name: this.draftName(), percentage: this.effectiveDraftPercentage() })
   } );
 
+
+  onHandleKeydown(event: KeyboardEvent): void {
+    const offset = event.key === 'ArrowUp' ? -1 : event.key === 'ArrowDown' ? 1 : 0;
+    if (!offset) return;
+    event.preventDefault();
+    this.moveBy.emit(offset);
+  }
 
   onRemove(): void {
     this.categoryRemoved.emit(this.category().id);

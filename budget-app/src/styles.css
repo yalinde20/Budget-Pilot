@@ -25,3 +25,26 @@ input {
   /* Supprime le délai de double-tap sur mobile. */
   touch-action: manipulation;
 }
+
+/* Glisser-déposer des catégories (Angular CDK). L'aperçu est ajouté à <body>,
+   d'où ces styles globaux. */
+.cdk-drag-preview {
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.15), 0 4px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.35;
+}
+
+.cdk-drag-animating,
+.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cdk-drag-animating,
+  .cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
+    transition: none;
+  }
+}

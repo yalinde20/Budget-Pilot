@@ -95,6 +95,29 @@ export class BudgetService {
     }));
   }
 
+  /** Déplace une catégorie dans la liste (l'ordre est repris par le graphique). */
+  moveCategory(fromIndex: number, toIndex: number): void {
+    this.budget.update((current) => {
+      const last = current.categories.length - 1;
+      const from = Math.min(Math.max(fromIndex, 0), last);
+      const to = Math.min(Math.max(toIndex, 0), last);
+      if (from === to || last < 0) return current;
+      const categories = [...current.categories];
+      const [moved] = categories.splice(from, 1);
+      categories.splice(to, 0, moved);
+      return { ...current, categories, updatedAt: new Date().toISOString() };
+    });
+  }
+
+  /** Déplace une catégorie d'un ou plusieurs crans (clavier). La position
+   * part de l'état courant, pas d'une liste affichée peut-être pas encore à jour :
+   * des appuis rapides sur une flèche s'enchaînent donc correctement. */
+  nudgeCategory(id: string, offset: number): void {
+    const index = this.categories().findIndex((c) => c.id === id);
+    if (index === -1) return;
+    this.moveCategory(index, index + offset);
+  }
+
   /** Supprime une catégorie et renvoie ce qu'il faut pour l'annuler
    * (la catégorie et sa position), ou null si elle n'existe pas. */
   removeCategory(id: string): RemovedCategory | null {

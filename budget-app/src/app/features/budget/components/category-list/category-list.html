@@ -1,13 +1,20 @@
-<div class="space-y-3">
+<div cdkDropList cdkDropListLockAxis="y" (cdkDropListDropped)="onDrop($event)"
+     class="flex flex-col gap-3">
   @if (categoryList().length === 0) {
     <p class="text-sm text-gray-400 text-center py-6">Aucune catégorie pour le moment</p>
   }
   @for (element of categoryList(); track element.id) {
-    <app-category-item
+    <app-category-item #item
+      cdkDrag
+      [cdkDragDisabled]="item.isEditing() || categoryList().length < 2"
+      [cdkDragStartDelay]="{ touch: 150, mouse: 0 }"
       [category]="element"
       [income]="income()"
+      [reorderable]="categoryList().length >= 2"
+      (moveBy)="onMoveBy(element.id, $event)"
       (categoryRemoved)="categoryRemoved.emit($event)"
       (categoryUpdated)="categoryUpdated.emit($event)">
     </app-category-item>
   }
 </div>
+<p class="sr-only" aria-live="polite">{{ moveAnnouncement() }}</p>
