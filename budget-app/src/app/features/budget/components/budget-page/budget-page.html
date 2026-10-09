@@ -35,6 +35,8 @@
           [income]="budgetService.income()"
           [categoryList]="budgetService.categoriesWithAmounts()"
           (categoryRemoved)="onCategoryRemoved($event)"
+          (categoryMoved)="budgetService.moveCategory($event.fromIndex, $event.toIndex)"
+          (categoryNudged)="budgetService.nudgeCategory($event.id, $event.offset)"
           (categoryUpdated)="budgetService.updateCategory($event.id, $event.changes)">
         </app-category-list>
       </section>

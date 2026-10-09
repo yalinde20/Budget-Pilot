@@ -38,9 +38,12 @@
 ## ✅ Montant fixe
 - Case « Montant fixe » en mode € (ajout et modification) : la catégorie garde son montant quand le revenu change, son pourcentage est recalculé ; cadenas affiché dans la liste
 
+## ✅ Réorganisation des catégories
+- Poignée ⠿ : glisser-déposer à la souris ou au doigt (appui bref), flèches ↑ ↓ au clavier avec annonce pour les lecteurs d'écran ; ordre repris dans le graphique
+
 ## 🗺️ Feuille de route (ordre choisi, une PR par étape)
 1. ~~Montant fixe pour une catégorie~~ ✅
-2. Réordonner les catégories (glisser-déposer sur ordinateur, appui long sur iPhone), ordre repris dans le graphique
+2. ~~Réordonner les catégories~~ ✅
 3. Vrai sélecteur d'icônes : une quarantaine d'icônes avec recherche
 4. Mode sombre : suit le réglage du système, couleurs du graphique revalidées sur fond sombre
 5. Sauvegarde protégée : `navigator.storage.persist()` + « dernière sauvegarde il y a N jours » avec rappel
