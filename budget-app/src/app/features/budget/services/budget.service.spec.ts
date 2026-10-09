@@ -69,3 +69,34 @@ describe('BudgetService (annulation de suppression)', () => {
     expect(service.categories().length).toBe(3);
   });
 });
+
+describe('BudgetService (montant fixe)', () => {
+  it('garde le montant d’une catégorie fixe quand le revenu change, et met à jour les totaux', () => {
+    TestBed.configureTestingModule({ providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }] });
+    const service = TestBed.inject(BudgetService);
+    service.updateIncome(2000);
+    service.addCategory({ name: 'Loyer', percentage: 30, fixedAmount: 600 });
+    service.addCategory({ name: 'Loisirs', percentage: 10 });
+
+    service.updateIncome(3000);
+
+    const [loyer, loisirs] = service.categoriesWithAmounts();
+    expect([loyer.amount, loyer.percentage]).toEqual([600, 20]);
+    expect([loisirs.amount, loisirs.percentage]).toEqual([300, 10]);
+    expect(service.totalPercentage()).toBe(30);
+    expect(service.remainingPercentage()).toBe(70);
+  });
+
+  it('retire le montant fixe quand la catégorie repasse en pourcentage', () => {
+    TestBed.configureTestingModule({ providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }] });
+    const service = TestBed.inject(BudgetService);
+    service.updateIncome(2000);
+    service.addCategory({ name: 'Loyer', percentage: 30, fixedAmount: 600 });
+    const id = service.categories()[0].id;
+
+    service.updateCategory(id, { percentage: 25, fixedAmount: undefined });
+    service.updateIncome(4000);
+
+    expect(service.categoriesWithAmounts()[0].amount).toBe(1000);
+  });
+});

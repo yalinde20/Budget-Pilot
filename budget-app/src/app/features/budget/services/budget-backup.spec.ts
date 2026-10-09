@@ -42,6 +42,15 @@ describe('serializeBackup / parseBackup', () => {
     expect(parseBackup(serializeBackup(budget, '1.0.0')).ok).toBeTrue();
   });
 
+  it('accepte un montant fixe et refuse un montant fixe négatif', () => {
+    const budget = makeBudget();
+    budget.categories[0].fixedAmount = 700;
+    expect(parseBackup(serializeBackup(budget, '1.5.0')).ok).toBeTrue();
+
+    budget.categories[0].fixedAmount = -1;
+    expect(parseBackup(serializeBackup(budget, '1.5.0')).ok).toBeFalse();
+  });
+
   it('refuse un fichier qui n’est pas du JSON', () => {
     expect(parseBackup('pas du json')).toEqual({ ok: false, error: jasmine.stringContaining('JSON') });
   });

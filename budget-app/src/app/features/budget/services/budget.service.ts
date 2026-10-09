@@ -3,9 +3,10 @@ import { STORAGE_ADAPTER } from '../../../core/tokens/storage.token';
 import { Budget, createEmptyBudget } from '../models/budget.model';
 import { Category, CategoryDraft } from '../models/category.model';
 import {
-  calculateAmount,
   calculateRemainingPercentage,
   calculateTotalPercentage,
+  effectiveAmount,
+  effectivePercentage,
   isOverAllocated,
 } from './budget-calculator';
 import { migrateLegacyColors } from './category-colors';
@@ -37,17 +38,20 @@ export class BudgetService {
   readonly categories = computed(() => this.budget().categories);
 
   /** Chaque catégorie enrichie de son montant, recalculé automatiquement
-   * dès que le revenu OU une seule catégorie change — sans code manuel. */
+   * dès que le revenu OU une seule catégorie change — sans code manuel.
+   * Pour une catégorie à montant fixe, c'est le pourcentage qui est recalculé. */
   readonly categoriesWithAmounts = computed<CategoryWithAmount[]>(() =>
     this.categories().map((category) => ({
       ...category,
-      amount: calculateAmount(this.income(), category.percentage),
+      percentage: effectivePercentage(category, this.income()),
+      amount: effectiveAmount(category, this.income()),
     })),
   );
 
-  readonly totalPercentage = computed(() => calculateTotalPercentage(this.categories()));
-  readonly remainingPercentage = computed(() => calculateRemainingPercentage(this.categories()));
-  readonly isOverAllocated = computed(() => isOverAllocated(this.categories()));
+  // Totaux calculés sur les pourcentages effectifs (montants fixes compris).
+  readonly totalPercentage = computed(() => calculateTotalPercentage(this.categoriesWithAmounts()));
+  readonly remainingPercentage = computed(() => calculateRemainingPercentage(this.categoriesWithAmounts()));
+  readonly isOverAllocated = computed(() => isOverAllocated(this.categoriesWithAmounts()));
 
   constructor() {
     // Persistance automatique : à chaque changement d'état, on réécrit

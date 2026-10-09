@@ -3,6 +3,8 @@ import {
   calculateAmount,
   calculateRemainingPercentage,
   calculateTotalPercentage,
+  effectiveAmount,
+  effectivePercentage,
   formatDecimal,
   isOverAllocated,
   parseDecimal,
@@ -99,5 +101,28 @@ describe('formatDecimal', () => {
   it('renvoie une chaîne vide pour 0 ou une valeur invalide', () => {
     expect(formatDecimal(0)).toBe('');
     expect(formatDecimal(NaN)).toBe('');
+  });
+});
+
+describe('effectivePercentage / effectiveAmount', () => {
+  const base = { id: 'c', name: 'Loyer', percentage: 30, createdAt: '', updatedAt: '' };
+
+  it('utilise le pourcentage saisi pour une catégorie classique', () => {
+    expect(effectivePercentage(base, 2000)).toBe(30);
+    expect(effectiveAmount(base, 2000)).toBe(600);
+  });
+
+  it('garde le montant fixe et recalcule le pourcentage quand le revenu change', () => {
+    const fixed = { ...base, fixedAmount: 600 };
+    expect(effectiveAmount(fixed, 2000)).toBe(600);
+    expect(effectivePercentage(fixed, 2000)).toBe(30);
+    expect(effectiveAmount(fixed, 3000)).toBe(600);
+    expect(effectivePercentage(fixed, 3000)).toBe(20);
+  });
+
+  it('vaut 0 % sans revenu, mais garde le montant fixe', () => {
+    const fixed = { ...base, fixedAmount: 600 };
+    expect(effectivePercentage(fixed, 0)).toBe(0);
+    expect(effectiveAmount(fixed, 0)).toBe(600);
   });
 });
