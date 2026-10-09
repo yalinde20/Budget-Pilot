@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.4.0...v1.5.0) (2026-10-09)
+
+
+### Fonctionnalités
+
+* montant fixe pour une catégorie ([faf3296](https://github.com/yalinde20/Budget-Pilot/commit/faf3296fd4483144aae0d894436bfbefdcf52af0))
+
 ## [1.4.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.3.0...v1.4.0) (2026-10-09)
 
 
