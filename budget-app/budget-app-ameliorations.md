@@ -35,15 +35,22 @@
 ## ✅ Sauvegarde
 - Export / import des données en fichier JSON (partage iOS ou téléchargement, validation et confirmation avant import)
 
-## 💡 Idées reportées à plus tard
-- Un vrai sélecteur d'icônes : bouton qui ouvre un panneau avec recherche, plus de choix qu'une simple liste fixe
-- Case à cocher pour rendre le montant d'une catégorie réellement fixe (indépendant des changements de revenu futurs), plutôt que juste au moment de la saisie
+## ✅ Montant fixe
+- Case « Montant fixe » en mode € (ajout et modification) : la catégorie garde son montant quand le revenu change, son pourcentage est recalculé ; cadenas affiché dans la liste
 
-## 📋 Autres idées non commencées
-- Demander un stockage persistant (`navigator.storage.persist()`)
-- Historique des revenus (suivi mois par mois)
-- Objectifs d'épargne (montant cible + barre de progression)
-- Mode sombre
+## 🗺️ Feuille de route (ordre choisi, une PR par étape)
+1. ~~Montant fixe pour une catégorie~~ ✅
+2. Réordonner les catégories (glisser-déposer sur ordinateur, appui long sur iPhone), ordre repris dans le graphique
+3. Vrai sélecteur d'icônes : une quarantaine d'icônes avec recherche
+4. Mode sombre : suit le réglage du système, couleurs du graphique revalidées sur fond sombre
+5. Sauvegarde protégée : `navigator.storage.persist()` + « dernière sauvegarde il y a N jours » avec rappel
+6. Aperçu avant import : revenu et catégories du fichier avant de remplacer le budget
+7. Récapitulatif imprimable / PDF du budget
+8. Compte et synchronisation iPhone ↔ ordinateur (Firebase)
+9. Dépenses réelles vs prévues par catégorie, sur le mois
+10. Historique mois par mois (copie du mois précédent, évolution du revenu)
+11. Objectifs d'épargne (montant cible, barre de progression, mois restants)
+12. Plusieurs budgets (« Perso », « Couple »…)
+
+## 📋 Idées techniques
 - Passage à IndexedDB (via `STORAGE_ADAPTER`, un seul endroit à changer)
-- Plusieurs budgets, puis plusieurs profils
-- Authentification + synchronisation cloud
