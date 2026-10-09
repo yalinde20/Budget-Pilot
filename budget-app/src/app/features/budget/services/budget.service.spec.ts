@@ -26,3 +26,46 @@ describe('BudgetService', () => {
     expect(storage.get<Budget>('budget')?.categories[0].color).toBe('#e34948');
   });
 });
+
+describe('BudgetService (annulation de suppression)', () => {
+  let service: BudgetService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }] });
+    service = TestBed.inject(BudgetService);
+    for (const name of ['Loyer', 'Courses', 'Loisirs']) {
+      service.addCategory({ name, percentage: 10 });
+    }
+  });
+
+  it('remet la catégorie supprimée à sa place d’origine, avec ses données', () => {
+    const before = service.categories();
+    const removed = service.removeCategory(before[1].id);
+
+    expect(service.categories().map((c) => c.name)).toEqual(['Loyer', 'Loisirs']);
+    expect(removed).toEqual({ category: before[1], index: 1 });
+
+    service.restoreCategory(removed!);
+    expect(service.categories()).toEqual(before);
+  });
+
+  it('remet la catégorie à la fin si la liste a raccourci entre-temps', () => {
+    const last = service.removeCategory(service.categories()[2].id)!;
+    service.removeCategory(service.categories()[1].id);
+
+    service.restoreCategory(last);
+    expect(service.categories().map((c) => c.name)).toEqual(['Loyer', 'Loisirs']);
+  });
+
+  it('ne restaure pas deux fois la même catégorie', () => {
+    const removed = service.removeCategory(service.categories()[0].id)!;
+    service.restoreCategory(removed);
+    service.restoreCategory(removed);
+    expect(service.categories().length).toBe(3);
+  });
+
+  it('renvoie null pour une catégorie inconnue', () => {
+    expect(service.removeCategory('inconnue')).toBeNull();
+    expect(service.categories().length).toBe(3);
+  });
+});

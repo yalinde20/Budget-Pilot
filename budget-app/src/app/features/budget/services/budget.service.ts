@@ -17,6 +17,12 @@ export interface CategoryWithAmount extends Category {
   amount: number;
 }
 
+/** Catégorie supprimée, gardée le temps de pouvoir annuler la suppression. */
+export interface RemovedCategory {
+  category: Category;
+  index: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class BudgetService {
   private readonly storage = inject(STORAGE_ADAPTER);
@@ -85,11 +91,27 @@ export class BudgetService {
     }));
   }
 
-  removeCategory(id: string): void {
+  /** Supprime une catégorie et renvoie ce qu'il faut pour l'annuler
+   * (la catégorie et sa position), ou null si elle n'existe pas. */
+  removeCategory(id: string): RemovedCategory | null {
+    const index = this.categories().findIndex((category) => category.id === id);
+    if (index === -1) return null;
+    const category = this.categories()[index];
     this.budget.update((current) => ({
       ...current,
-      categories: current.categories.filter((category) => category.id !== id),
+      categories: current.categories.filter((c) => c.id !== id),
       updatedAt: new Date().toISOString(),
     }));
+    return { category, index };
+  }
+
+  /** Annule une suppression : remet la catégorie à sa place d'origine. */
+  restoreCategory({ category, index }: RemovedCategory): void {
+    this.budget.update((current) => {
+      if (current.categories.some((c) => c.id === category.id)) return current;
+      const categories = [...current.categories];
+      categories.splice(Math.min(index, categories.length), 0, category);
+      return { ...current, categories, updatedAt: new Date().toISOString() };
+    });
   }
 }

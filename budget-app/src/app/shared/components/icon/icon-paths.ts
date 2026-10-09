@@ -73,4 +73,8 @@ export const ICON_PATHS: Record<string, readonly string[]> = {
     'M7 9l5 -5l5 5',
     'M12 4l0 12',
   ],
+  'x': [
+    'M18 6l-12 12',
+    'M6 6l12 12',
+  ],
 };

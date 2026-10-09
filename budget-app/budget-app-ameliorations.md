@@ -29,6 +29,9 @@
 ## ✅ Palette de couleurs
 - Palette validée pour les daltoniens (bleu, rouge, jaune, vert, violet, turquoise), couleur libre proposée automatiquement à chaque ajout, anciennes couleurs converties automatiquement
 
+## ✅ Annulation d'une suppression
+- Bandeau « … supprimée — Annuler » pendant 8 s (pause au survol / focus), raccourci Ctrl/⌘+Z sur ordinateur, catégorie remise à sa place
+
 ## ✅ Sauvegarde
 - Export / import des données en fichier JSON (partage iOS ou téléchargement, validation et confirmation avant import)
 
@@ -38,7 +41,6 @@
 
 ## 📋 Autres idées non commencées
 - Demander un stockage persistant (`navigator.storage.persist()`)
-- Annuler une suppression (undo)
 - Historique des revenus (suivi mois par mois)
 - Objectifs d'épargne (montant cible + barre de progression)
 - Mode sombre
