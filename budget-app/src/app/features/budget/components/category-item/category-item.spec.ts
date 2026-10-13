@@ -63,7 +63,7 @@ describe('CategoryItem', () => {
     component.draftAmount.set(500);
     component.onEditSave();
 
-    expect(emitted).toEqual([{ id: 'cat-1', changes: { name: 'Loyer', percentage: 25, fixedAmount: undefined } }]);
+    expect(emitted).toEqual([{ id: 'cat-1', changes: { name: 'Loyer', percentage: 25, fixedAmount: undefined, icon: 'ti-tag' } }]);
   });
 });
 

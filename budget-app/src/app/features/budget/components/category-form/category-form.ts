@@ -2,32 +2,24 @@ import { Component, computed, input, linkedSignal, output, signal } from '@angul
 import { CategoryDraft } from '../../models/category.model';
 import { isValidCategoryDraft } from '../../services/category-validator';
 import { calculatePercentageFromAmount, formatDecimal, parseDecimal } from '../../services/budget-calculator';
-import { Icon } from '../../../../shared/components/icon/icon';
+import { IconPicker } from '../../../../shared/components/icon-picker/icon-picker';
 import { CATEGORY_COLORS, suggestCategoryColor } from '../../services/category-colors';
 
 @Component({
   selector: 'app-category-form',
-  imports: [Icon],
+  imports: [IconPicker],
   templateUrl: './category-form.html',
   styleUrl: './category-form.css',
 })
 export class CategoryForm {
   protected readonly formatDecimal = formatDecimal;
-  readonly availableIcons = [
-    { id: 'ti-home', label: 'Logement' },
-    { id: 'ti-salad', label: 'Alimentation' },
-    { id: 'ti-pig-money', label: 'Épargne' },
-    { id: 'ti-ball-tennis', label: 'Loisirs' },
-    { id: 'ti-car', label: 'Transport' },
-    { id: 'ti-heart', label: 'Santé' },
-    { id: 'ti-shopping-cart', label: 'Courses' },
-    { id: 'ti-plane', label: 'Voyages' },
-  ];
+  /** Icône proposée par défaut. */
+  static readonly DEFAULT_ICON = 'ti-home';
   readonly availableColors = CATEGORY_COLORS;
 
   name = signal<string>('');
   percentage = signal<number>(0);
-  icon = signal<string>(this.availableIcons[0].id);
+  icon = signal<string>(CategoryForm.DEFAULT_ICON);
   income = input.required<number>();
   /** Couleurs des catégories existantes, pour en proposer une différente. */
   usedColors = input<readonly (string | undefined)[]>([]);
@@ -76,7 +68,7 @@ export class CategoryForm {
     this.name.set('');
     this.percentage.set(0);
     this.amount.set(0);
-    this.icon.set(this.availableIcons[0].id);
+    this.icon.set(CategoryForm.DEFAULT_ICON);
     this.inputMode.set('percentage');
     this.fixed.set(false);
   }

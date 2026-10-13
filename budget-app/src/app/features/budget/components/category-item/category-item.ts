@@ -6,6 +6,7 @@ import {isValidCategoryDraft} from '../../services/category-validator';
 import { calculatePercentageFromAmount, formatDecimal, parseDecimal } from '../../services/budget-calculator';
 import { Icon } from '../../../../shared/components/icon/icon';
 import { CdkDragHandle } from '@angular/cdk/drag-drop';
+import { IconPicker } from '../../../../shared/components/icon-picker/icon-picker';
 
 @Component({
   selector: 'app-category-item',
@@ -14,6 +15,7 @@ import { CdkDragHandle } from '@angular/cdk/drag-drop';
     DecimalPipe,
     Icon,
     CdkDragHandle,
+    IconPicker,
   ],
   templateUrl: './category-item.html',
   styleUrl: './category-item.css',
@@ -34,6 +36,7 @@ export class CategoryItem {
   draftInputMode = signal<'percentage' | 'amount'>('percentage');
   draftAmount = signal<number>(0);
   draftFixed = signal<boolean>(false);
+  draftIcon = signal<string>('ti-tag');
   canUseAmountMode = computed(() => this.income() > 0 );
   effectiveDraftPercentage = computed(() =>{
     return this.draftInputMode() === 'amount' ? calculatePercentageFromAmount(this.draftAmount(), this.income()) : this.draftPercentage();
@@ -64,6 +67,7 @@ export class CategoryItem {
     this.draftInputMode.set(isFixed && this.canUseAmountMode() ? 'amount' : 'percentage');
     this.draftAmount.set(category.amount);
     this.draftFixed.set(isFixed);
+    this.draftIcon.set(category.icon || 'ti-tag');
     this.isEditing.set(true);
   }
 
@@ -76,7 +80,12 @@ export class CategoryItem {
     if (!this.isDraftValid()) return;
     this.categoryUpdated.emit({
       id: this.category().id,
-      changes: { name: this.draftName(), percentage: this.effectiveDraftPercentage(), fixedAmount: this.draftFixedAmount() },
+      changes: {
+        name: this.draftName(),
+        percentage: this.effectiveDraftPercentage(),
+        fixedAmount: this.draftFixedAmount(),
+        icon: this.draftIcon(),
+      },
     });
     this.isEditing.set(false);
   }
