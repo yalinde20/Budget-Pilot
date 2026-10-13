@@ -41,10 +41,13 @@
 ## ✅ Réorganisation des catégories
 - Poignée ⠿ : glisser-déposer à la souris ou au doigt (appui bref), flèches ↑ ↓ au clavier avec annonce pour les lecteurs d'écran ; ordre repris dans le graphique
 
+## ✅ Sélecteur d'icônes
+- 47 icônes avec libellés et mots-clés en français, recherche sans accents (« voiture », « loyer », « electricite »…), disponible aussi en modification d'une catégorie
+
 ## 🗺️ Feuille de route (ordre choisi, une PR par étape)
 1. ~~Montant fixe pour une catégorie~~ ✅
 2. ~~Réordonner les catégories~~ ✅
-3. Vrai sélecteur d'icônes : une quarantaine d'icônes avec recherche
+3. ~~Vrai sélecteur d'icônes~~ ✅
 4. Mode sombre : suit le réglage du système, couleurs du graphique revalidées sur fond sombre
 5. Sauvegarde protégée : `navigator.storage.persist()` + « dernière sauvegarde il y a N jours » avec rappel
 6. Aperçu avant import : revenu et catégories du fichier avant de remplacer le budget
