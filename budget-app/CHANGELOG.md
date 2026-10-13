@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.6.0...v1.7.0) (2026-10-13)
+
+
+### Fonctionnalités
+
+* sélecteur d'icônes avec recherche ([cb737b9](https://github.com/yalinde20/Budget-Pilot/commit/cb737b98c231473800f843b3875b3384439d311e))
+
 ## [1.6.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.5.0...v1.6.0) (2026-10-09)
 
 
