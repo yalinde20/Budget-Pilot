@@ -1,10 +1,11 @@
-import { Component, computed, input, linkedSignal, output, signal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
 import { CategoryDraft } from '../../models/category.model';
 import { isValidCategoryDraft } from '../../services/category-validator';
 import { calculateAmount, calculatePercentageFromAmount, formatDecimal, parseDecimal } from '../../services/budget-calculator';
 import { DecimalPipe } from '@angular/common';
 import { IconPicker } from '../../../../shared/components/icon-picker/icon-picker';
 import { CATEGORY_COLORS, suggestCategoryColor } from '../../services/category-colors';
+import { ThemeService } from '../../../../core/services/theme.service';
 
 @Component({
   selector: 'app-category-form',
@@ -17,6 +18,7 @@ export class CategoryForm {
   /** Icône proposée par défaut. */
   static readonly DEFAULT_ICON = 'ti-home';
   readonly availableColors = CATEGORY_COLORS;
+  protected readonly theme = inject(ThemeService);
 
   name = signal<string>('');
   percentage = signal<number>(0);

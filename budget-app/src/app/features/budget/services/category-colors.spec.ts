@@ -1,5 +1,5 @@
 import { Budget } from '../models/budget.model';
-import { CATEGORY_COLORS, migrateLegacyColors, suggestCategoryColor } from './category-colors';
+import { CATEGORY_COLORS, categoryDisplayColor, migrateLegacyColors, suggestCategoryColor } from './category-colors';
 
 const [BLEU, ROUGE, JAUNE, VERT, VIOLET, TURQUOISE] = CATEGORY_COLORS.map((c) => c.value);
 
@@ -55,5 +55,20 @@ describe('migrateLegacyColors', () => {
   it('renvoie le même objet quand il n’y a rien à migrer', () => {
     const budget = budgetWith([BLEU, ROUGE]);
     expect(migrateLegacyColors(budget)).toBe(budget);
+  });
+});
+
+describe('categoryDisplayColor', () => {
+  it('garde la couleur en thème clair', () => {
+    expect(categoryDisplayColor('#4a3aa7', false)).toBe('#4a3aa7');
+  });
+
+  it('prend la variante sombre de la palette en thème sombre, sans tenir compte de la casse', () => {
+    expect(categoryDisplayColor('#4A3AA7', true)).toBe('#584cba');
+    expect(CATEGORY_COLORS.every((c) => categoryDisplayColor(c.value, true) === c.dark)).toBeTrue();
+  });
+
+  it('laisse telle quelle une couleur hors palette', () => {
+    expect(categoryDisplayColor('#94a3b8', true)).toBe('#94a3b8');
   });
 });

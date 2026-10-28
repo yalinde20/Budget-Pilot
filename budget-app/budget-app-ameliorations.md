@@ -47,11 +47,15 @@
 ## ✅ Attribuer le reste
 - Bouton « Le reste : X % » (remplit une fois, en % ou en €) et case « Prendre automatiquement le reste » (la catégorie s'ajuste en continu, une seule à la fois), à l'ajout et en modification
 
+## ✅ Mode sombre
+- Sélecteur en haut de page : automatique (suit le réglage du système, en direct), clair ou sombre ; choix mémorisé et appliqué dès le chargement, sans flash clair
+- Couleurs des catégories revalidées sur fond sombre (même teinte, luminosité ajustée) ; barre d'état iPhone accordée au thème
+
 ## 🗺️ Feuille de route (ordre choisi, une PR par étape)
 1. ~~Montant fixe pour une catégorie~~ ✅
 2. ~~Réordonner les catégories~~ ✅
 3. ~~Vrai sélecteur d'icônes~~ ✅
-4. Mode sombre : suit le réglage du système, couleurs du graphique revalidées sur fond sombre
+4. ~~Mode sombre~~ ✅
 5. Sauvegarde protégée : `navigator.storage.persist()` + « dernière sauvegarde il y a N jours » avec rappel
 6. Aperçu avant import : revenu et catégories du fichier avant de remplacer le budget
 7. Récapitulatif imprimable / PDF du budget

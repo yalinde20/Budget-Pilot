@@ -9,15 +9,29 @@ import { Budget } from '../models/budget.model';
  *   sur la seule couleur (légende chiffrée, espaces entre les parts) ;
  * - dans l'ordre ci-dessous, deux couleurs voisines (anneau bouclé compris)
  *   sont séparées d'au moins 15,3 : c'est l'ordre des suggestions.
+ *
+ * `dark` : même teinte, luminosité ajustée pour le fond sombre (cartes gray-900,
+ * #101828), validée de la même façon en mode sombre : bande de luminosité
+ * respectée, écart minimal 16,6 en vision normale et 7,8 en daltonisme ; seul
+ * le violet reste sous 3:1 de contraste (2,67), compensé par la légende chiffrée.
+ * La catégorie enregistre toujours la couleur claire (`value`) : la variante
+ * sombre n'est qu'un affichage.
  */
 export const CATEGORY_COLORS = [
-  { value: '#2a78d6', label: 'Bleu' },
-  { value: '#e34948', label: 'Rouge' },
-  { value: '#eda100', label: 'Jaune' },
-  { value: '#008300', label: 'Vert' },
-  { value: '#4a3aa7', label: 'Violet' },
-  { value: '#1baf7a', label: 'Turquoise' },
+  { value: '#2a78d6', dark: '#408cec', label: 'Bleu' },
+  { value: '#e34948', dark: '#d43a3b', label: 'Rouge' },
+  { value: '#eda100', dark: '#c38400', label: 'Jaune' },
+  { value: '#008300', dark: '#007b00', label: 'Vert' },
+  { value: '#4a3aa7', dark: '#584cba', label: 'Violet' },
+  { value: '#1baf7a', dark: '#14ac77', label: 'Turquoise' },
 ] as const;
+
+/** Couleur à afficher pour une couleur de catégorie, selon le thème. Les
+ * couleurs hors palette (anciennes ou importées) restent telles quelles. */
+export function categoryDisplayColor(color: string, dark: boolean): string {
+  if (!dark) return color;
+  return CATEGORY_COLORS.find((c) => c.value === color.toLowerCase())?.dark ?? color;
+}
 
 /** Anciennes couleurs (jusqu'à la v1.2.0) → couleur la plus proche de la palette actuelle. */
 const LEGACY_COLORS: Record<string, string> = {

@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { STORAGE_ADAPTER } from '../../../../core/tokens/storage.token';
+import { InMemoryStorageAdapter } from '../../../../core/testing/in-memory-storage-adapter';
 import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -19,7 +21,7 @@ describe('AllocationChart', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AllocationChart],
-      providers: [{ provide: LOCALE_ID, useValue: 'fr-FR' }],
+      providers: [{ provide: LOCALE_ID, useValue: 'fr-FR' }, { provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AllocationChart);
@@ -66,7 +68,7 @@ describe('AllocationChart', () => {
 
 describe('AllocationChart (toucher)', () => {
   it('garde la part sélectionnée après un appui (survol puis clic)', async () => {
-    await TestBed.configureTestingModule({ imports: [AllocationChart] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [AllocationChart], providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }] }).compileComponents();
     const fixture = TestBed.createComponent(AllocationChart);
     fixture.componentRef.setInput('income', 2000);
     fixture.componentRef.setInput('categories', [

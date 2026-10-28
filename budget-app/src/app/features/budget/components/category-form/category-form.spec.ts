@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { STORAGE_ADAPTER } from '../../../../core/tokens/storage.token';
+import { InMemoryStorageAdapter } from '../../../../core/testing/in-memory-storage-adapter';
 
 import { CategoryForm } from './category-form';
 
@@ -8,7 +10,8 @@ describe('CategoryForm', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CategoryForm]
+      imports: [CategoryForm],
+      providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }],
     })
     .compileComponents();
 
@@ -25,7 +28,7 @@ describe('CategoryForm', () => {
 
 describe('CategoryForm (couleur proposée)', () => {
   it('propose une couleur pas encore utilisée, puis la suivante après un ajout', async () => {
-    await TestBed.configureTestingModule({ imports: [CategoryForm] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [CategoryForm], providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }] }).compileComponents();
     const fixture = TestBed.createComponent(CategoryForm);
     const form = fixture.componentInstance;
     fixture.componentRef.setInput('income', 2000);
@@ -47,7 +50,7 @@ describe('CategoryForm (couleur proposée)', () => {
 
 describe('CategoryForm (montant fixe)', () => {
   it('envoie le montant fixe seulement si la case est cochée en mode €', async () => {
-    await TestBed.configureTestingModule({ imports: [CategoryForm] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [CategoryForm], providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }] }).compileComponents();
     const fixture = TestBed.createComponent(CategoryForm);
     const form = fixture.componentInstance;
     fixture.componentRef.setInput('income', 2000);
@@ -75,7 +78,7 @@ describe('CategoryForm (montant fixe)', () => {
 
 describe('CategoryForm (attribuer le reste)', () => {
   async function setup(remaining: number) {
-    await TestBed.configureTestingModule({ imports: [CategoryForm] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [CategoryForm], providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }] }).compileComponents();
     const fixture = TestBed.createComponent(CategoryForm);
     fixture.componentRef.setInput('income', 2000);
     fixture.componentRef.setInput('remainingPercentage', remaining);

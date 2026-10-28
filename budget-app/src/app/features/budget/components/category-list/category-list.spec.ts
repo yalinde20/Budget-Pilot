@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { STORAGE_ADAPTER } from '../../../../core/tokens/storage.token';
+import { InMemoryStorageAdapter } from '../../../../core/testing/in-memory-storage-adapter';
 
 import { CategoryList } from './category-list';
 
@@ -8,7 +10,8 @@ describe('CategoryList', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CategoryList]
+      imports: [CategoryList],
+      providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }],
     })
     .compileComponents();
 
@@ -31,7 +34,7 @@ describe('CategoryList (réorganisation)', () => {
   const all = [cat('a', 'Loyer'), cat('b', 'Courses'), cat('c', 'Loisirs')];
 
   async function setup(count: number) {
-    await TestBed.configureTestingModule({ imports: [CategoryList] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [CategoryList], providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }] }).compileComponents();
     const fixture = TestBed.createComponent(CategoryList);
     fixture.componentRef.setInput('income', 2000);
     fixture.componentRef.setInput('categoryList', all.slice(0, count));

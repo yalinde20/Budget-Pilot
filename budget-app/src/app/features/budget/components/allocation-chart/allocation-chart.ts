@@ -1,7 +1,9 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { CategoryWithAmount } from '../../services/budget.service';
 import { buildAllocationChart, ChartSegment } from '../../services/allocation-chart';
+import { categoryDisplayColor } from '../../services/category-colors';
+import { ThemeService } from '../../../../core/services/theme.service';
 
 /** Rayon et épaisseur de l'anneau, dans le repère SVG 200×200. */
 const RADIUS = 80;
@@ -20,7 +22,16 @@ export class AllocationChart {
   income = input.required<number>();
 
   protected readonly radius = RADIUS;
-  protected readonly chart = computed(() => buildAllocationChart(this.categories(), this.income()));
+  private readonly theme = inject(ThemeService);
+
+  protected readonly chart = computed(() => {
+    const chart = buildAllocationChart(this.categories(), this.income());
+    const dark = this.theme.isDark();
+    return {
+      ...chart,
+      segments: chart.segments.map((s) => ({ ...s, color: categoryDisplayColor(s.color, dark) })),
+    };
+  });
 
   /** Part survolée ou touchée : son détail s'affiche au centre de l'anneau. */
   protected readonly activeId = signal<string | null>(null);
