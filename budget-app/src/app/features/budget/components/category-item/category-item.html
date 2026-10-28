@@ -1,5 +1,5 @@
 @if (!isEditing()) {
-  <div class="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3"
+  <div class="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3 dark:bg-gray-900"
        [class.pl-1]="reorderable()">
     @if (reorderable()) {
       <button type="button" cdkDragHandle
@@ -7,20 +7,20 @@
               [attr.aria-label]="'Déplacer ' + category().name + ' (flèches haut et bas)'"
               title="Glisser pour déplacer, ou flèches ↑ ↓"
               (keydown)="onHandleKeydown($event)"
-              class="w-7 h-10 -mr-1 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing shrink-0 focus-visible:outline-2 focus-visible:outline-teal-500">
+              class="w-7 h-10 -mr-1 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing shrink-0 focus-visible:outline-2 focus-visible:outline-teal-500 dark:text-gray-500 dark:hover:text-gray-300">
         <app-icon name="grip-vertical" [size]="18" />
       </button>
     }
-    <div class="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center shrink-0"
-         [style.color]="category().color || '#94a3b8'">
+    <div class="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center shrink-0 dark:bg-gray-800"
+         [style.color]="displayColor()">
       <app-icon [name]="category().icon || 'ti-tag'" />
     </div>
     <div class="flex-1 min-w-0">
       <div class="flex items-center justify-between gap-2 mb-2">
-        <span class="text-sm font-medium text-gray-900 truncate">{{ category().name }}</span>
-        <span class="flex items-center gap-1 text-sm font-medium text-gray-900 whitespace-nowrap">
+        <span class="text-sm font-medium text-gray-900 truncate dark:text-gray-100">{{ category().name }}</span>
+        <span class="flex items-center gap-1 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-gray-100">
           @if (category().fixedAmount !== undefined) {
-            <span class="text-gray-400" title="Montant fixe : ne change pas avec le revenu">
+            <span class="text-gray-400 dark:text-gray-500" title="Montant fixe : ne change pas avec le revenu">
               <app-icon name="lock" [size]="14" />
               <span class="sr-only">Montant fixe,</span>
             </span>
@@ -29,12 +29,12 @@
         </span>
       </div>
       <div class="flex items-center gap-2">
-        <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-          <div class="h-full rounded-full" [style.width.%]="category().percentage" [style.background-color]="category().color || '#94a3b8'"></div>
+        <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden dark:bg-gray-800">
+          <div class="h-full rounded-full" [style.width.%]="category().percentage" [style.background-color]="displayColor()"></div>
         </div>
-        <span class="text-xs text-gray-400 min-w-16 text-right whitespace-nowrap">
+        <span class="text-xs text-gray-400 min-w-16 text-right whitespace-nowrap dark:text-gray-500">
           @if (category().takesRemainder) {
-            <span class="font-medium text-teal-700" title="Prend automatiquement le reste">reste ·</span>
+            <span class="font-medium text-teal-700 dark:text-teal-400" title="Prend automatiquement le reste">reste ·</span>
           }
           {{ category().percentage | number:'1.0-2' }} %
         </span>
@@ -42,46 +42,46 @@
     </div>
     <div class="flex items-center gap-1 shrink-0">
       <button type="button" (click)="onEditStart()" [attr.aria-label]="'Modifier ' + category().name" title="Modifier"
-              class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-400 hover:text-teal-600 hover:bg-gray-50 transition-colors">
+              class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-400 hover:text-teal-600 hover:bg-gray-50 transition-colors dark:text-gray-500 dark:hover:text-teal-400 dark:hover:bg-gray-800">
         <app-icon name="pencil" [size]="18" />
       </button>
       <button type="button" (click)="onRemove()" [attr.aria-label]="'Supprimer ' + category().name" title="Supprimer"
-              class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-400 hover:text-red-500 hover:bg-gray-50 transition-colors">
+              class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-400 hover:text-red-500 hover:bg-gray-50 transition-colors dark:text-gray-500 dark:hover:text-red-400 dark:hover:bg-gray-800">
         <app-icon name="trash" [size]="18" />
       </button>
     </div>
   </div>
 } @else {
   <form (submit)="onEditSave($event)" (keydown.escape)="onEditCancel()"
-        class="bg-white rounded-2xl shadow-sm p-4 flex flex-col gap-2">
+        class="bg-white rounded-2xl shadow-sm p-4 flex flex-col gap-2 dark:bg-gray-900">
     <div class="flex items-center gap-2">
       <button type="button" (click)="draftInputMode.set('percentage')"
               [attr.aria-pressed]="draftInputMode() === 'percentage'" aria-label="Saisir en pourcentage"
-              class="text-xs font-medium rounded-lg px-3 py-1.5 bg-gray-100 text-gray-500"
+              class="text-xs font-medium rounded-lg px-3 py-1.5 bg-gray-100 text-gray-500 dark:not-aria-pressed:bg-gray-800 dark:not-aria-pressed:text-gray-400"
               [class.text-white]="draftInputMode() === 'percentage'"
               [class.bg-teal-600]="draftInputMode() === 'percentage'">%</button>
       <button type="button" (click)="draftInputMode.set('amount')"
               [disabled]="!canUseAmountMode()"
               [attr.aria-pressed]="draftInputMode() === 'amount'" aria-label="Saisir en euros"
-              class="text-xs font-medium rounded-lg px-3 py-1.5 bg-gray-100 text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed"
+              class="text-xs font-medium rounded-lg px-3 py-1.5 bg-gray-100 text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed dark:not-aria-pressed:bg-gray-800 dark:not-aria-pressed:text-gray-400"
               [class.text-white]="draftInputMode() === 'amount'"
               [class.bg-teal-600]="draftInputMode() === 'amount'">€</button>
     </div>
     <div class="flex items-center gap-2 flex-wrap">
       <input type="text" aria-label="Nom de la catégorie" autocomplete="off" enterkeyhint="done"
-             class="basis-full sm:basis-0 sm:flex-1 min-w-0 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500"
+             class="basis-full sm:basis-0 sm:flex-1 min-w-0 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500 dark:border-gray-700"
              [value]="draftName()" (input)="onDraftNameInput($event)">
       @if (draftAuto()) {
         <input type="text" disabled [value]="(availableForThis() | number:'1.0-2') + ' %'"
                aria-label="Pourcentage calculé automatiquement"
-               class="w-20 text-base sm:text-sm border border-gray-200 bg-gray-50 text-gray-500 rounded-lg px-3 py-2">
+               class="w-20 text-base sm:text-sm border border-gray-200 bg-gray-50 text-gray-500 rounded-lg px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
       } @else if (draftInputMode() === 'percentage') {
         <input type="text" inputmode="decimal" aria-label="Pourcentage du revenu" autocomplete="off" enterkeyhint="done"
-               class="w-20 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500"
+               class="w-20 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500 dark:border-gray-700"
                [value]="formatDecimal(draftPercentage())" (input)="onDraftPercentageInput($event)">
       } @else {
         <input type="text" inputmode="decimal" aria-label="Montant en euros" autocomplete="off" enterkeyhint="done"
-               class="w-20 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500"
+               class="w-20 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500 dark:border-gray-700"
                [value]="formatDecimal(draftAmount())" (input)="onDraftAmountInput($event)">
       }
       <button type="submit"
@@ -89,18 +89,18 @@
               [disabled]="!isDraftValid()">
         Enregistrer
       </button>
-      <button type="button" class="text-gray-400 hover:text-gray-600 text-sm px-2 py-2 shrink-0" (click)="onEditCancel()">
+      <button type="button" class="text-gray-400 hover:text-gray-600 text-sm px-2 py-2 shrink-0 dark:text-gray-500 dark:hover:text-gray-300" (click)="onEditCancel()">
         Annuler
       </button>
     </div>
     <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
       @if (!draftAuto()) {
         <button type="button" (click)="fillRemainder()" [disabled]="availableForThis() <= 0"
-                class="text-xs font-medium rounded-lg px-3 py-1.5 border border-teal-200 text-teal-700 hover:bg-teal-50 disabled:opacity-40 disabled:cursor-not-allowed">
+                class="text-xs font-medium rounded-lg px-3 py-1.5 border border-teal-200 text-teal-700 hover:bg-teal-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-teal-800 dark:text-teal-400 dark:hover:bg-teal-950">
           Le reste : {{ availableForThis() | number:'1.0-2' }} %
         </button>
       }
-      <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+      <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none dark:text-gray-300">
         <input type="checkbox" class="w-4 h-4 accent-teal-600"
                [checked]="draftAuto()" (change)="draftAuto.set($any($event.target).checked)">
         Prendre automatiquement le reste
@@ -108,10 +108,10 @@
     </div>
     <app-icon-picker [(value)]="draftIcon" />
     @if (draftInputMode() === 'amount' && !draftAuto()) {
-      <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+      <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none dark:text-gray-300">
         <input type="checkbox" class="w-4 h-4 accent-teal-600"
                [checked]="draftFixed()" (change)="draftFixed.set($any($event.target).checked)">
-        Montant fixe <span class="text-xs text-gray-400">(ne change pas avec le revenu)</span>
+        Montant fixe <span class="text-xs text-gray-400 dark:text-gray-500">(ne change pas avec le revenu)</span>
       </label>
     }
   </form>

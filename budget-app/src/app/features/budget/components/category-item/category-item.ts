@@ -1,4 +1,4 @@
-import {Component, computed, input, output, signal} from '@angular/core';
+import {Component, computed, inject, input, output, signal} from '@angular/core';
 import { CategoryWithAmount } from '../../services/budget.service';
 import { CategoryDraft } from '../../models/category.model';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
@@ -7,6 +7,9 @@ import { calculateAmount, calculatePercentageFromAmount, formatDecimal, parseDec
 import { Icon } from '../../../../shared/components/icon/icon';
 import { CdkDragHandle } from '@angular/cdk/drag-drop';
 import { IconPicker } from '../../../../shared/components/icon-picker/icon-picker';
+import { ThemeService } from '../../../../core/services/theme.service';
+import { categoryDisplayColor } from '../../services/category-colors';
+import { DEFAULT_CATEGORY_COLOR } from '../../services/allocation-chart';
 
 @Component({
   selector: 'app-category-item',
@@ -23,6 +26,11 @@ import { IconPicker } from '../../../../shared/components/icon-picker/icon-picke
 export class CategoryItem {
   protected readonly formatDecimal = formatDecimal;
   category = input.required<CategoryWithAmount>();
+  private readonly theme = inject(ThemeService);
+  /** Couleur de l'icône et de la barre, adaptée au thème clair ou sombre. */
+  protected readonly displayColor = computed(() =>
+    categoryDisplayColor(this.category().color || DEFAULT_CATEGORY_COLOR, this.theme.isDark()),
+  );
   categoryRemoved = output<string>();
   /** Affiche la poignée de déplacement (au moins deux catégories). */
   reorderable = input<boolean>(false);

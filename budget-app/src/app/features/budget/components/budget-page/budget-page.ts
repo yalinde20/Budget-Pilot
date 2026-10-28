@@ -7,13 +7,14 @@ import { AllocationSummary } from '../allocation-summary/allocation-summary';
 import { BackupPanel } from '../backup-panel/backup-panel';
 import { AllocationChart } from '../allocation-chart/allocation-chart';
 import { Icon } from '../../../../shared/components/icon/icon';
+import { ThemeToggle } from '../../../../core/components/theme-toggle/theme-toggle';
 
 /** Durée pendant laquelle une suppression peut être annulée. */
 export const UNDO_DELAY_MS = 8000;
 
 @Component({
   selector: 'app-budget-page',
-  imports: [IncomeInput, CategoryForm, CategoryList, AllocationSummary, BackupPanel, AllocationChart, Icon],
+  imports: [IncomeInput, CategoryForm, CategoryList, AllocationSummary, BackupPanel, AllocationChart, Icon, ThemeToggle],
   templateUrl: './budget-page.html',
   styleUrl: './budget-page.css',
   host: {

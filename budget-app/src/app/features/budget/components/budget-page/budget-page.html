@@ -1,7 +1,10 @@
 <main class="pt-8 pb-10 sm:py-14 px-4">
   <div class="max-w-xl lg:max-w-5xl mx-auto">
 
-    <h1 class="text-2xl font-semibold text-gray-900 mb-6 sm:mb-8">Mon budget</h1>
+    <div class="flex items-center justify-between gap-4 mb-6 sm:mb-8">
+      <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">Mon budget</h1>
+      <app-theme-toggle />
+    </div>
 
     <!-- Mobile : une colonne. Ordinateur (lg) : saisie à gauche, liste à droite. -->
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8 lg:items-start">
@@ -32,7 +35,7 @@
             [categories]="budgetService.categoriesWithAmounts()"
             [income]="budgetService.income()" />
         }
-        <h2 id="categories-title" class="text-sm font-medium text-gray-500 mb-3 lg:mt-0">Catégories</h2>
+        <h2 id="categories-title" class="text-sm font-medium text-gray-500 mb-3 lg:mt-0 dark:text-gray-400">Catégories</h2>
         <app-category-list
           [income]="budgetService.income()"
           [categoryList]="budgetService.categoriesWithAmounts()"
@@ -54,7 +57,8 @@
 @if (lastRemoved(); as removed) {
   <div role="status"
        class="fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-md
-              bg-gray-900 text-white rounded-2xl shadow-lg pl-4 pr-2 py-2 flex items-center gap-2"
+              bg-gray-900 text-white rounded-2xl shadow-lg pl-4 pr-2 py-2 flex items-center gap-2
+              dark:bg-gray-800 dark:ring-1 dark:ring-gray-700"
        (mouseenter)="stopUndoTimer()" (mouseleave)="startUndoTimer()"
        (focusin)="stopUndoTimer()" (focusout)="startUndoTimer()">
     <span class="flex-1 min-w-0 flex text-sm">

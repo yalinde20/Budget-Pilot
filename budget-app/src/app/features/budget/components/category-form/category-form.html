@@ -1,15 +1,15 @@
-<form (submit)="onSubmit($event)" class="bg-white rounded-2xl shadow-sm p-4 flex flex-col gap-3">
-  <h2 class="text-sm font-medium text-gray-900">Nouvelle catégorie</h2>
+<form (submit)="onSubmit($event)" class="bg-white rounded-2xl shadow-sm p-4 flex flex-col gap-3 dark:bg-gray-900">
+  <h2 class="text-sm font-medium text-gray-900 dark:text-gray-100">Nouvelle catégorie</h2>
 
   <div class="flex items-center gap-2">
-    <button type="button" (click)="inputMode.set('percentage')" class="text-xs font-medium rounded-lg px-3 py-1.5 bg-gray-100 text-gray-500"
+    <button type="button" (click)="inputMode.set('percentage')" class="text-xs font-medium rounded-lg px-3 py-1.5 bg-gray-100 text-gray-500 dark:not-aria-pressed:bg-gray-800 dark:not-aria-pressed:text-gray-400"
             [attr.aria-pressed]="inputMode() === 'percentage'"
             aria-label="Saisir en pourcentage"
             [class.text-white]="inputMode() === 'percentage'"
             [class.bg-teal-600]="inputMode() === 'percentage'"
     >%</button>
 
-    <button type="button" (click)="inputMode.set('amount')" class="text-xs font-medium rounded-lg px-3 py-1.5 bg-gray-100 text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed"
+    <button type="button" (click)="inputMode.set('amount')" class="text-xs font-medium rounded-lg px-3 py-1.5 bg-gray-100 text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed dark:not-aria-pressed:bg-gray-800 dark:not-aria-pressed:text-gray-400"
             [disabled]="!canUseAmountMode()"
             [attr.aria-pressed]="inputMode() === 'amount'"
             aria-label="Saisir en euros"
@@ -18,26 +18,26 @@
     >€</button>
 
     @if (!canUseAmountMode()) {
-      <span class="text-xs text-gray-400">Renseigne d'abord un revenu</span>
+      <span class="text-xs text-gray-400 dark:text-gray-500">Renseigne d'abord un revenu</span>
     }
   </div>
 
   <div class="flex items-center gap-2">
     <input type="text" [value]="name()" (input)="onNameInput($event)" placeholder="Nom de la catégorie"
            aria-label="Nom de la catégorie" autocomplete="off" enterkeyhint="done"
-           class="flex-1 min-w-0 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500">
+           class="flex-1 min-w-0 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500 dark:border-gray-700">
     @if (auto()) {
       <input type="text" disabled [value]="(available() | number:'1.0-2') + ' %'"
              aria-label="Pourcentage calculé automatiquement"
-             class="w-20 text-base sm:text-sm border border-gray-200 bg-gray-50 text-gray-500 rounded-lg px-3 py-2">
+             class="w-20 text-base sm:text-sm border border-gray-200 bg-gray-50 text-gray-500 rounded-lg px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
     } @else if (inputMode() === 'percentage') {
       <input type="text" inputmode="decimal" [value]="formatDecimal(percentage())" (input)="onPercentageInput($event)" placeholder="%"
              aria-label="Pourcentage du revenu" autocomplete="off" enterkeyhint="done"
-             class="w-20 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500">
+             class="w-20 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500 dark:border-gray-700">
     } @else {
       <input type="text" inputmode="decimal" [value]="formatDecimal(amount())" (input)="onAmountInput($event)" placeholder="€"
              aria-label="Montant en euros" autocomplete="off" enterkeyhint="done"
-             class="w-20 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500">
+             class="w-20 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500 dark:border-gray-700">
     }
   </div>
 
@@ -45,27 +45,27 @@
   <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
     @if (!auto()) {
       <button type="button" (click)="fillRemainder()" [disabled]="available() <= 0"
-              class="text-xs font-medium rounded-lg px-3 py-1.5 border border-teal-200 text-teal-700 hover:bg-teal-50 disabled:opacity-40 disabled:cursor-not-allowed">
+              class="text-xs font-medium rounded-lg px-3 py-1.5 border border-teal-200 text-teal-700 hover:bg-teal-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-teal-800 dark:text-teal-400 dark:hover:bg-teal-950">
         Le reste : {{ available() | number:'1.0-2' }} %
       </button>
     }
-    <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+    <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none dark:text-gray-300">
       <input type="checkbox" class="w-4 h-4 accent-teal-600 shrink-0"
              [checked]="auto()" (change)="auto.set($any($event.target).checked)">
       Prendre automatiquement le reste
     </label>
     @if (auto() && remainderOwner(); as owner) {
-      <p class="basis-full text-xs text-gray-500">« {{ owner }} » ne prendra plus le reste et gardera son pourcentage actuel.</p>
+      <p class="basis-full text-xs text-gray-500 dark:text-gray-400">« {{ owner }} » ne prendra plus le reste et gardera son pourcentage actuel.</p>
     }
   </div>
 
   @if (inputMode() === 'amount' && !auto()) {
-    <label class="flex items-start gap-2 text-sm text-gray-700 cursor-pointer select-none">
+    <label class="flex items-start gap-2 text-sm text-gray-700 cursor-pointer select-none dark:text-gray-300">
       <input type="checkbox" class="mt-0.5 w-4 h-4 accent-teal-600 shrink-0"
              [checked]="fixed()" (change)="fixed.set($any($event.target).checked)">
       <span>
         Montant fixe
-        <span class="block text-xs text-gray-400">Garde ce montant même si ton revenu change.</span>
+        <span class="block text-xs text-gray-400 dark:text-gray-500">Garde ce montant même si ton revenu change.</span>
       </span>
     </label>
   }
@@ -76,8 +76,8 @@
     @for (c of availableColors; track c.value) {
       <button type="button" (click)="color.set(c.value)"
               [attr.aria-label]="c.label" [attr.aria-pressed]="color() === c.value" [title]="c.label"
-              class="w-8 h-8 sm:w-6 sm:h-6 rounded-full"
-              [style.background-color]="c.value"
+              class="w-8 h-8 sm:w-6 sm:h-6 rounded-full dark:aria-pressed:border-white"
+              [style.background-color]="theme.isDark() ? c.dark : c.value"
               [class.border-2]="color() === c.value"
               [class.border-gray-900]="color() === c.value">
       </button>

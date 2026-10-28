@@ -1,11 +1,22 @@
 @import "tailwindcss";
 
+/* Mode sombre : actif quand <html> porte la classe `dark`, posée par
+   ThemeService (et dès le chargement par le script de index.html). Le choix
+   clair / sombre / automatique est donc indépendant du réglage du système. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Styles globaux, pensés pour la PWA installée (iPhone et ordinateur). */
 
 html {
+  color-scheme: light;
   /* Évite que Safari iOS grossisse le texte en mode paysage. */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+}
+
+/* Champs, barres de défilement et texte par défaut en version sombre. */
+html.dark {
+  color-scheme: dark;
 }
 
 body {
@@ -17,6 +28,10 @@ body {
     env(safe-area-inset-left);
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
+}
+
+.dark body {
+  background-color: var(--color-gray-950);
 }
 
 button,
@@ -31,6 +46,10 @@ input {
 .cdk-drag-preview {
   border-radius: 1rem;
   box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.15), 0 4px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.dark .cdk-drag-preview {
+  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.6), 0 4px 10px -6px rgb(0 0 0 / 0.5);
 }
 
 .cdk-drag-placeholder {

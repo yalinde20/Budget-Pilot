@@ -7,7 +7,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="Répartis ton revenu mensuel en catégories et suis ton budget.">
   <meta name="theme-color" content="#f9fafb">
-  <meta name="color-scheme" content="light">
+  <script>
+    // Applique le thème avant l'affichage, pour éviter un flash clair au démarrage.
+    // Mêmes règles que ThemeService (clé « theme » du stockage local, couleurs).
+    (function () {
+      var preference = null;
+      try {
+        preference = JSON.parse(localStorage.getItem('theme'));
+      } catch (e) {}
+      var dark = preference === 'dark' ||
+        (preference !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if (dark) {
+        document.documentElement.classList.add('dark');
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', '#030712');
+      }
+    })();
+  </script>
   <meta name="format-detection" content="telephone=no">
 
   <link rel="icon" type="image/x-icon" href="favicon.ico">

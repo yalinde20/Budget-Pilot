@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { STORAGE_ADAPTER } from '../../../../core/tokens/storage.token';
+import { InMemoryStorageAdapter } from '../../../../core/testing/in-memory-storage-adapter';
 
 import { CategoryItem } from './category-item';
 import { CategoryWithAmount } from '../../services/budget.service';
@@ -21,7 +23,8 @@ describe('CategoryItem', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CategoryItem]
+      imports: [CategoryItem],
+      providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }],
     })
     .compileComponents();
 
@@ -79,7 +82,7 @@ describe('CategoryItem (montant fixe)', () => {
   }
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [CategoryItem] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [CategoryItem], providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }] }).compileComponents();
   });
 
   it('affiche le cadenas et s’édite en euros, case cochée', () => {
@@ -120,7 +123,7 @@ describe('CategoryItem (montant fixe)', () => {
 
 describe('CategoryItem (attribuer le reste)', () => {
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [CategoryItem] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [CategoryItem], providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }] }).compileComponents();
   });
 
   function setup(category: Partial<CategoryWithAmount>, remaining: number) {
