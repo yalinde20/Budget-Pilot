@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.8.0...v1.9.0) (2026-10-28)
+
+
+### Fonctionnalités
+
+* mode sombre ([8242c29](https://github.com/yalinde20/Budget-Pilot/commit/8242c290b64d3600a8a5c574990015ade60770e0))
+
 ## [1.8.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.7.0...v1.8.0) (2026-10-28)
 
 
