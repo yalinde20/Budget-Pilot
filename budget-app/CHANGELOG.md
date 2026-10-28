@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.7.0...v1.8.0) (2026-10-28)
+
+
+### Fonctionnalités
+
+* attribuer le reste à une catégorie ([c171666](https://github.com/yalinde20/Budget-Pilot/commit/c17166651487c937f198cd03a96b051168825d3a))
+
 ## [1.7.0](https://github.com/yalinde20/Budget-Pilot/compare/v1.6.0...v1.7.0) (2026-10-13)
 
 
