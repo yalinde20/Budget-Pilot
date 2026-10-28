@@ -145,3 +145,51 @@ describe('BudgetService (réorganisation)', () => {
     expect(names()).toEqual(['Courses', 'Loisirs', 'Loyer']);
   });
 });
+
+describe('BudgetService (reste automatique)', () => {
+  let service: BudgetService;
+  const byName = (name: string) => service.categoriesWithAmounts().find((c) => c.name === name)!;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ providers: [{ provide: STORAGE_ADAPTER, useClass: InMemoryStorageAdapter }] });
+    service = TestBed.inject(BudgetService);
+    service.updateIncome(2000);
+    service.addCategory({ name: 'Loyer', percentage: 30 });
+    service.addCategory({ name: 'Épargne', percentage: 0, takesRemainder: true });
+  });
+
+  it('recalcule le reste quand les autres catégories changent', () => {
+    expect(byName('Épargne').percentage).toBe(70);
+    service.addCategory({ name: 'Courses', percentage: 20 });
+    expect(byName('Épargne').percentage).toBe(50);
+    expect(service.totalPercentage()).toBe(100);
+    expect(service.remainingPercentage()).toBe(0);
+  });
+
+  it('une seule catégorie prend le reste ; l’ancienne garde son pourcentage du moment', () => {
+    service.addCategory({ name: 'Vacances', percentage: 0, takesRemainder: true });
+
+    expect(service.remainderCategoryName()).toBe('Vacances');
+    expect(byName('Épargne').takesRemainder).toBeFalsy();
+    expect(byName('Épargne').percentage).toBe(70);
+    expect(byName('Vacances').percentage).toBe(0);
+  });
+
+  it('en modification aussi, le mode passe d’une catégorie à l’autre', () => {
+    const loyerId = service.categories().find((c) => c.name === 'Loyer')!.id;
+    service.updateCategory(loyerId, { takesRemainder: true });
+
+    expect(service.remainderCategoryName()).toBe('Loyer');
+    expect(byName('Épargne').percentage).toBe(70);
+    expect(byName('Loyer').percentage).toBe(30);
+  });
+
+  it('une catégorie « reste » restaurée ne prend pas le reste si une autre l’a pris entre-temps', () => {
+    const epargneId = service.categories().find((c) => c.name === 'Épargne')!.id;
+    const removed = service.removeCategory(epargneId)!;
+    service.addCategory({ name: 'Vacances', percentage: 0, takesRemainder: true });
+
+    service.restoreCategory(removed);
+    expect(service.categories().filter((c) => c.takesRemainder).map((c) => c.name)).toEqual(['Vacances']);
+  });
+});

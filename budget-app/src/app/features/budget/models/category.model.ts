@@ -12,10 +12,13 @@ export interface Category {
    * `percentage` garde alors la valeur au moment de la saisie (utile pour
    * les anciennes versions de l'app qui relisent une sauvegarde). */
   fixedAmount?: number;
+  /** La catégorie prend automatiquement tout ce qui reste à répartir
+   * (100 % moins les autres catégories). Une seule catégorie à la fois. */
+  takesRemainder?: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
 /** Champs fournis par l'utilisateur lors de la création d'une catégorie.
  * Les métadonnées (id, dates) sont générées par le service. */
-export type CategoryDraft = Pick<Category, 'name' | 'percentage' | 'icon' | 'color' | 'fixedAmount'>;
+export type CategoryDraft = Pick<Category, 'name' | 'percentage' | 'icon' | 'color' | 'fixedAmount' | 'takesRemainder'>;

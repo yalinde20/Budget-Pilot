@@ -19,6 +19,8 @@
         <app-category-form
           [income]="budgetService.income()"
           [usedColors]="usedColors()"
+          [remainingPercentage]="budgetService.remainingPercentage()"
+          [remainderOwner]="budgetService.remainderCategoryName()"
           (categoryAdded)="budgetService.addCategory($event)">
         </app-category-form>
       </section>
@@ -34,6 +36,7 @@
         <app-category-list
           [income]="budgetService.income()"
           [categoryList]="budgetService.categoriesWithAmounts()"
+          [remainingPercentage]="budgetService.remainingPercentage()"
           (categoryRemoved)="onCategoryRemoved($event)"
           (categoryMoved)="budgetService.moveCategory($event.fromIndex, $event.toIndex)"
           (categoryNudged)="budgetService.nudgeCategory($event.id, $event.offset)"

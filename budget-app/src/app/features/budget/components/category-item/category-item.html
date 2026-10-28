@@ -32,7 +32,12 @@
         <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
           <div class="h-full rounded-full" [style.width.%]="category().percentage" [style.background-color]="category().color || '#94a3b8'"></div>
         </div>
-        <span class="text-xs text-gray-400 w-16 text-right whitespace-nowrap">{{ category().percentage | number:'1.0-2' }} %</span>
+        <span class="text-xs text-gray-400 min-w-16 text-right whitespace-nowrap">
+          @if (category().takesRemainder) {
+            <span class="font-medium text-teal-700" title="Prend automatiquement le reste">reste ·</span>
+          }
+          {{ category().percentage | number:'1.0-2' }} %
+        </span>
       </div>
     </div>
     <div class="flex items-center gap-1 shrink-0">
@@ -66,7 +71,11 @@
       <input type="text" aria-label="Nom de la catégorie" autocomplete="off" enterkeyhint="done"
              class="basis-full sm:basis-0 sm:flex-1 min-w-0 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500"
              [value]="draftName()" (input)="onDraftNameInput($event)">
-      @if (draftInputMode() === 'percentage') {
+      @if (draftAuto()) {
+        <input type="text" disabled [value]="(availableForThis() | number:'1.0-2') + ' %'"
+               aria-label="Pourcentage calculé automatiquement"
+               class="w-20 text-base sm:text-sm border border-gray-200 bg-gray-50 text-gray-500 rounded-lg px-3 py-2">
+      } @else if (draftInputMode() === 'percentage') {
         <input type="text" inputmode="decimal" aria-label="Pourcentage du revenu" autocomplete="off" enterkeyhint="done"
                class="w-20 text-base sm:text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500"
                [value]="formatDecimal(draftPercentage())" (input)="onDraftPercentageInput($event)">
@@ -84,8 +93,21 @@
         Annuler
       </button>
     </div>
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+      @if (!draftAuto()) {
+        <button type="button" (click)="fillRemainder()" [disabled]="availableForThis() <= 0"
+                class="text-xs font-medium rounded-lg px-3 py-1.5 border border-teal-200 text-teal-700 hover:bg-teal-50 disabled:opacity-40 disabled:cursor-not-allowed">
+          Le reste : {{ availableForThis() | number:'1.0-2' }} %
+        </button>
+      }
+      <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+        <input type="checkbox" class="w-4 h-4 accent-teal-600"
+               [checked]="draftAuto()" (change)="draftAuto.set($any($event.target).checked)">
+        Prendre automatiquement le reste
+      </label>
+    </div>
     <app-icon-picker [(value)]="draftIcon" />
-    @if (draftInputMode() === 'amount') {
+    @if (draftInputMode() === 'amount' && !draftAuto()) {
       <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
         <input type="checkbox" class="w-4 h-4 accent-teal-600"
                [checked]="draftFixed()" (change)="draftFixed.set($any($event.target).checked)">

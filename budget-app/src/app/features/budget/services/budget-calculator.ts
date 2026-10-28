@@ -66,3 +66,27 @@ export function effectivePercentage(category: Category, income: number): number 
 export function effectiveAmount(category: Category, income: number): number {
   return category.fixedAmount ?? calculateAmount(income, category.percentage);
 }
+
+/**
+ * Valeurs effectives de toutes les catégories (pourcentage et montant), y
+ * compris la catégorie qui prend automatiquement le reste : son pourcentage
+ * vaut 100 % moins celui des autres, sans descendre sous 0. S'il y en avait
+ * plusieurs (ancienne sauvegarde), seule la première prend le reste.
+ */
+export function withEffectiveValues<T extends Category>(
+  categories: readonly T[],
+  income: number,
+): (T & { amount: number })[] {
+  const remainderIndex = categories.findIndex((c) => c.takesRemainder);
+  const values = categories.map((category) => ({
+    ...category,
+    percentage: effectivePercentage(category, income),
+    amount: effectiveAmount(category, income),
+  }));
+  if (remainderIndex === -1) return values;
+
+  const othersTotal = values.reduce((sum, c, i) => (i === remainderIndex ? sum : sum + c.percentage), 0);
+  const percentage = Math.max(0, Math.round((100 - othersTotal) * 100) / 100);
+  values[remainderIndex] = { ...values[remainderIndex], percentage, amount: calculateAmount(income, percentage) };
+  return values;
+}

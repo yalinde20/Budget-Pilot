@@ -8,6 +8,7 @@ import {
   formatDecimal,
   isOverAllocated,
   parseDecimal,
+  withEffectiveValues,
 } from './budget-calculator';
 
 function makeCategory(percentage: number): Category {
@@ -124,5 +125,37 @@ describe('effectivePercentage / effectiveAmount', () => {
     const fixed = { ...base, fixedAmount: 600 };
     expect(effectivePercentage(fixed, 0)).toBe(0);
     expect(effectiveAmount(fixed, 0)).toBe(600);
+  });
+});
+
+describe('withEffectiveValues (reste automatique)', () => {
+  const cat = (id: string, percentage: number, extra: Partial<Category> = {}): Category => ({
+    id, name: id, percentage, createdAt: '', updatedAt: '', ...extra,
+  });
+
+  it('donne à la catégorie « reste » 100 % moins les autres', () => {
+    const result = withEffectiveValues([cat('loyer', 30), cat('epargne', 5, { takesRemainder: true }), cat('courses', 20)], 2000);
+    expect(result.map((c) => [c.id, c.percentage, c.amount])).toEqual([
+      ['loyer', 30, 600],
+      ['epargne', 50, 1000],
+      ['courses', 20, 400],
+    ]);
+  });
+
+  it('tient compte des montants fixes des autres catégories', () => {
+    const result = withEffectiveValues([cat('loyer', 0, { fixedAmount: 700 }), cat('reste', 0, { takesRemainder: true })], 2000);
+    expect(result[1].percentage).toBe(65);
+    expect(result[1].amount).toBe(1300);
+  });
+
+  it('ne descend pas sous 0 % quand les autres dépassent déjà 100 %', () => {
+    const result = withEffectiveValues([cat('a', 80), cat('b', 40), cat('reste', 10, { takesRemainder: true })], 2000);
+    expect(result[2].percentage).toBe(0);
+    expect(result[2].amount).toBe(0);
+  });
+
+  it('ne donne le reste qu’à la première catégorie marquée', () => {
+    const result = withEffectiveValues([cat('a', 20, { takesRemainder: true }), cat('b', 10, { takesRemainder: true })], 2000);
+    expect(result.map((c) => c.percentage)).toEqual([90, 10]);
   });
 });

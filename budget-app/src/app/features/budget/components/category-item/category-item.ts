@@ -3,7 +3,7 @@ import { CategoryWithAmount } from '../../services/budget.service';
 import { CategoryDraft } from '../../models/category.model';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import {isValidCategoryDraft} from '../../services/category-validator';
-import { calculatePercentageFromAmount, formatDecimal, parseDecimal } from '../../services/budget-calculator';
+import { calculateAmount, calculatePercentageFromAmount, formatDecimal, parseDecimal } from '../../services/budget-calculator';
 import { Icon } from '../../../../shared/components/icon/icon';
 import { CdkDragHandle } from '@angular/cdk/drag-drop';
 import { IconPicker } from '../../../../shared/components/icon-picker/icon-picker';
@@ -37,12 +37,21 @@ export class CategoryItem {
   draftAmount = signal<number>(0);
   draftFixed = signal<boolean>(false);
   draftIcon = signal<string>('ti-tag');
+  /** La catégorie prend automatiquement tout ce qui reste. */
+  draftAuto = signal<boolean>(false);
+  /** Pourcentage du revenu encore non réparti (toutes catégories). */
+  remainingPercentage = input<number>(0);
+  /** Reste disponible pour CETTE catégorie : sa part actuelle + le non réparti. */
+  availableForThis = computed(() =>
+    Math.max(0, Math.round((this.remainingPercentage() + this.category().percentage) * 100) / 100),
+  );
   canUseAmountMode = computed(() => this.income() > 0 );
   effectiveDraftPercentage = computed(() =>{
     return this.draftInputMode() === 'amount' ? calculatePercentageFromAmount(this.draftAmount(), this.income()) : this.draftPercentage();
   });
 
   isDraftValid = computed(() => {
+    if (this.draftAuto()) return isValidCategoryDraft({ name: this.draftName(), percentage: this.availableForThis() });
     return this.draftInputMode() === 'amount' && !this.canUseAmountMode() ? false : isValidCategoryDraft({ name: this.draftName(), percentage: this.effectiveDraftPercentage() })
   } );
 
@@ -68,6 +77,7 @@ export class CategoryItem {
     this.draftAmount.set(category.amount);
     this.draftFixed.set(isFixed);
     this.draftIcon.set(category.icon || 'ti-tag');
+    this.draftAuto.set(!!category.takesRemainder);
     this.isEditing.set(true);
   }
 
@@ -80,14 +90,33 @@ export class CategoryItem {
     if (!this.isDraftValid()) return;
     this.categoryUpdated.emit({
       id: this.category().id,
-      changes: {
-        name: this.draftName(),
-        percentage: this.effectiveDraftPercentage(),
-        fixedAmount: this.draftFixedAmount(),
-        icon: this.draftIcon(),
-      },
+      changes: this.draftAuto()
+        ? {
+            name: this.draftName(),
+            // Valeur de secours ; le pourcentage est ensuite recalculé en continu.
+            percentage: this.availableForThis(),
+            fixedAmount: undefined,
+            takesRemainder: true,
+            icon: this.draftIcon(),
+          }
+        : {
+            name: this.draftName(),
+            percentage: this.effectiveDraftPercentage(),
+            fixedAmount: this.draftFixedAmount(),
+            takesRemainder: undefined,
+            icon: this.draftIcon(),
+          },
     });
     this.isEditing.set(false);
+  }
+
+  /** Remplit une fois le champ avec le reste disponible (en % ou en €). */
+  fillRemainder(): void {
+    if (this.draftInputMode() === 'amount') {
+      this.draftAmount.set(calculateAmount(this.income(), this.availableForThis()));
+    } else {
+      this.draftPercentage.set(this.availableForThis());
+    }
   }
 
   /** Montant fixe à enregistrer ; undefined le retire (retour au pourcentage). */
