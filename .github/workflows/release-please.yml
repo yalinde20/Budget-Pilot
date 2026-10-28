@@ -3,6 +3,9 @@ name: Release
 on:
   push:
     branches: [master]
+  # Bouton « Run workflow » (onglet Actions) : redéploie la version de master
+  # sans créer de release, par exemple après un échec de déploiement.
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -25,7 +28,7 @@ jobs:
 
   deploy:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    if: ${{ needs.release-please.outputs.release_created == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     concurrency:
       group: firebase-hosting-live
@@ -38,7 +41,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: ${{ needs.release-please.outputs.tag_name }}
+          # Le tag de la release, ou master lors d'un déploiement manuel.
+          ref: ${{ needs.release-please.outputs.tag_name || github.sha }}
 
       - uses: actions/setup-node@v7
         with:
@@ -57,3 +61,7 @@ jobs:
           projectId: budgetpilot-244fb
           channelId: live
           entryPoint: budget-app
+          # Version figée : la 15.34.1 exige une permission IAM supplémentaire
+          # (serviceusage.services.get) que le compte de service n'a pas, et
+          # « latest » peut casser le déploiement à chaque nouvelle version.
+          firebaseToolsVersion: 15.33.0
