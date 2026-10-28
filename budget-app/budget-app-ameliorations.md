@@ -44,6 +44,9 @@
 ## ✅ Sélecteur d'icônes
 - 47 icônes avec libellés et mots-clés en français, recherche sans accents (« voiture », « loyer », « electricite »…), disponible aussi en modification d'une catégorie
 
+## ✅ Attribuer le reste
+- Bouton « Le reste : X % » (remplit une fois, en % ou en €) et case « Prendre automatiquement le reste » (la catégorie s'ajuste en continu, une seule à la fois), à l'ajout et en modification
+
 ## 🗺️ Feuille de route (ordre choisi, une PR par étape)
 1. ~~Montant fixe pour une catégorie~~ ✅
 2. ~~Réordonner les catégories~~ ✅

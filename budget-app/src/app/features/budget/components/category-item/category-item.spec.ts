@@ -63,7 +63,7 @@ describe('CategoryItem', () => {
     component.draftAmount.set(500);
     component.onEditSave();
 
-    expect(emitted).toEqual([{ id: 'cat-1', changes: { name: 'Loyer', percentage: 25, fixedAmount: undefined, icon: 'ti-tag' } }]);
+    expect(emitted).toEqual([{ id: 'cat-1', changes: { name: 'Loyer', percentage: 25, fixedAmount: undefined, takesRemainder: undefined, icon: 'ti-tag' } }]);
   });
 });
 
@@ -115,5 +115,54 @@ describe('CategoryItem (montant fixe)', () => {
     item.onEditSave();
 
     expect(emitted[0].changes['fixedAmount']).toBe(600);
+  });
+});
+
+describe('CategoryItem (attribuer le reste)', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [CategoryItem] }).compileComponents();
+  });
+
+  function setup(category: Partial<CategoryWithAmount>, remaining: number) {
+    const fixture = TestBed.createComponent(CategoryItem);
+    fixture.componentRef.setInput('category', makeCategory(category));
+    fixture.componentRef.setInput('income', 2000);
+    fixture.componentRef.setInput('remainingPercentage', remaining);
+    fixture.detectChanges();
+    const emitted: { id: string; changes: Record<string, unknown> }[] = [];
+    fixture.componentInstance.categoryUpdated.subscribe((e) => emitted.push(e as never));
+    return { fixture, item: fixture.componentInstance, emitted };
+  }
+
+  it('le reste disponible inclut la part actuelle de la catégorie', () => {
+    const { item } = setup({ percentage: 30, amount: 600 }, 15);
+    expect(item.availableForThis()).toBe(45);
+
+    item.onEditStart();
+    item.fillRemainder();
+    expect(item.draftPercentage()).toBe(45);
+    item.draftInputMode.set('amount');
+    item.fillRemainder();
+    expect(item.draftAmount()).toBe(900);
+  });
+
+  it('passe en mode automatique (montant fixe retiré), puis en sort en gardant son pourcentage', () => {
+    const { fixture, item, emitted } = setup({ percentage: 30, amount: 600, fixedAmount: 600 }, 15);
+
+    item.onEditStart();
+    item.draftAuto.set(true);
+    item.onEditSave();
+    expect(emitted[0].changes).toEqual(jasmine.objectContaining({ takesRemainder: true, fixedAmount: undefined, percentage: 45 }));
+
+    fixture.componentRef.setInput('category', makeCategory({ percentage: 45, amount: 900, takesRemainder: true }));
+    fixture.componentRef.setInput('remainingPercentage', 0);
+    fixture.detectChanges();
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('reste');
+
+    item.onEditStart();
+    expect(item.draftAuto()).toBeTrue();
+    item.draftAuto.set(false);
+    item.onEditSave();
+    expect(emitted[1].changes).toEqual(jasmine.objectContaining({ takesRemainder: undefined, percentage: 45 }));
   });
 });

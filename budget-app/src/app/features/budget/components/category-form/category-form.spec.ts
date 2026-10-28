@@ -72,3 +72,45 @@ describe('CategoryForm (montant fixe)', () => {
     expect(form.fixed()).toBeFalse();
   });
 });
+
+describe('CategoryForm (attribuer le reste)', () => {
+  async function setup(remaining: number) {
+    await TestBed.configureTestingModule({ imports: [CategoryForm] }).compileComponents();
+    const fixture = TestBed.createComponent(CategoryForm);
+    fixture.componentRef.setInput('income', 2000);
+    fixture.componentRef.setInput('remainingPercentage', remaining);
+    fixture.detectChanges();
+    const emitted: Record<string, unknown>[] = [];
+    fixture.componentInstance.categoryAdded.subscribe((d) => emitted.push(d as Record<string, unknown>));
+    return { fixture, form: fixture.componentInstance, emitted };
+  }
+
+  it('remplit une fois le champ avec le reste, en % ou en €', async () => {
+    const { form } = await setup(35);
+    form.fillRemainder();
+    expect(form.percentage()).toBe(35);
+
+    form.inputMode.set('amount');
+    form.fillRemainder();
+    expect(form.amount()).toBe(700);
+  });
+
+  it('enregistre le mode automatique avec le reste actuel comme valeur de secours', async () => {
+    const { form, emitted } = await setup(35);
+    form.name.set('Épargne');
+    form.auto.set(true);
+    form.onSubmit();
+
+    expect(emitted[0]).toEqual(jasmine.objectContaining({ name: 'Épargne', percentage: 35, takesRemainder: true }));
+    expect('fixedAmount' in emitted[0]).toBeFalse();
+    expect(form.auto()).toBeFalse();
+  });
+
+  it('désactive le bouton quand il ne reste rien', async () => {
+    const { fixture } = await setup(-5);
+    const button = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('button'))
+      .find((b) => b.textContent?.includes('Le reste'))!;
+    expect(button.disabled).toBeTrue();
+    expect(button.textContent).toContain('0 %');
+  });
+});

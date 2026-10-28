@@ -22,6 +22,8 @@ export class CategoryList {
   /** Clavier : déplacer cette catégorie d'un cran (-1 haut, +1 bas). */
   categoryNudged = output<{ id: string; offset: number }>();
   income = input.required<number>();
+  /** Pourcentage du revenu encore non réparti. */
+  remainingPercentage = input<number>(0);
 
   /** Message lu par les lecteurs d'écran après un déplacement. */
   readonly moveAnnouncement = signal('');

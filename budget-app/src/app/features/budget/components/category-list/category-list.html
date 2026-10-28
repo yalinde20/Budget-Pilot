@@ -10,6 +10,7 @@
       [cdkDragStartDelay]="{ touch: 150, mouse: 0 }"
       [category]="element"
       [income]="income()"
+      [remainingPercentage]="remainingPercentage()"
       [reorderable]="categoryList().length >= 2"
       (moveBy)="onMoveBy(element.id, $event)"
       (categoryRemoved)="categoryRemoved.emit($event)"

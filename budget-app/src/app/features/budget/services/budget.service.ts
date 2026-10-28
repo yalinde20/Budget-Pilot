@@ -5,9 +5,8 @@ import { Category, CategoryDraft } from '../models/category.model';
 import {
   calculateRemainingPercentage,
   calculateTotalPercentage,
-  effectiveAmount,
-  effectivePercentage,
   isOverAllocated,
+  withEffectiveValues,
 } from './budget-calculator';
 import { migrateLegacyColors } from './category-colors';
 
@@ -41,17 +40,15 @@ export class BudgetService {
    * dès que le revenu OU une seule catégorie change — sans code manuel.
    * Pour une catégorie à montant fixe, c'est le pourcentage qui est recalculé. */
   readonly categoriesWithAmounts = computed<CategoryWithAmount[]>(() =>
-    this.categories().map((category) => ({
-      ...category,
-      percentage: effectivePercentage(category, this.income()),
-      amount: effectiveAmount(category, this.income()),
-    })),
+    withEffectiveValues(this.categories(), this.income()),
   );
 
   // Totaux calculés sur les pourcentages effectifs (montants fixes compris).
   readonly totalPercentage = computed(() => calculateTotalPercentage(this.categoriesWithAmounts()));
   readonly remainingPercentage = computed(() => calculateRemainingPercentage(this.categoriesWithAmounts()));
   readonly isOverAllocated = computed(() => isOverAllocated(this.categoriesWithAmounts()));
+  /** Nom de la catégorie qui prend automatiquement le reste, s'il y en a une. */
+  readonly remainderCategoryName = computed(() => this.categories().find((c) => c.takesRemainder)?.name ?? null);
 
   constructor() {
     // Persistance automatique : à chaque changement d'état, on réécrit
@@ -78,7 +75,7 @@ export class BudgetService {
     const category: Category = { ...draft, id: crypto.randomUUID(), createdAt: now, updatedAt: now };
     this.budget.update((current) => ({
       ...current,
-      categories: [...current.categories, category],
+      categories: [...this.withoutRemainder(current.categories, draft.takesRemainder), category],
       updatedAt: now,
     }));
   }
@@ -86,7 +83,7 @@ export class BudgetService {
   updateCategory(id: string, changes: Partial<CategoryDraft>): void {
     this.budget.update((current) => ({
       ...current,
-      categories: current.categories.map((category) =>
+      categories: this.withoutRemainder(current.categories, changes.takesRemainder, id).map((category) =>
         category.id === id
           ? { ...category, ...changes, updatedAt: new Date().toISOString() }
           : category,
@@ -137,8 +134,25 @@ export class BudgetService {
     this.budget.update((current) => {
       if (current.categories.some((c) => c.id === category.id)) return current;
       const categories = [...current.categories];
-      categories.splice(Math.min(index, categories.length), 0, category);
+      // Si une autre catégorie a pris le reste entre-temps, elle le garde.
+      const restored = category.takesRemainder && categories.some((c) => c.takesRemainder)
+        ? { ...category, takesRemainder: undefined }
+        : category;
+      categories.splice(Math.min(index, categories.length), 0, restored);
       return { ...current, categories, updatedAt: new Date().toISOString() };
     });
+  }
+
+  /** Une seule catégorie prend le reste : quand une catégorie le prend,
+   * les autres (sauf `exceptId`) perdent ce mode. */
+  private withoutRemainder(categories: Category[], takesRemainder: boolean | undefined, exceptId?: string): Category[] {
+    if (!takesRemainder) return categories;
+    // L'ancienne catégorie « reste » garde le pourcentage qu'elle avait à cet instant.
+    const effective = withEffectiveValues(categories, this.income());
+    return categories.map((c, i) =>
+      c.takesRemainder && c.id !== exceptId
+        ? { ...c, takesRemainder: undefined, percentage: effective[i].percentage }
+        : c,
+    );
   }
 }
